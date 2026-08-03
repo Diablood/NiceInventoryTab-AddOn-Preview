@@ -10,9 +10,20 @@
 | `fix/*` | One temporary corrective milestone |
 | `hotfix/*` | Stable correction after `1.0.0` |
 
-No ordinary work is committed directly to `main` or `develop`.
+No ordinary work is committed directly to `main` or `develop` after the initial empty-repository bootstrap.
 
-## Starting a milestone
+## Initial repository bootstrap
+
+For the first milestone only:
+
+1. Create the first commit on `feature/project-foundation`.
+2. Create `develop` at the validated feature commit.
+3. Push `develop` and make it the default GitHub branch.
+4. Optionally publish the feature branch for traceability.
+5. Create the annotated `v0.1.0-dev` tag at the same commit.
+6. Keep `main` reserved until the first stable release.
+
+## Starting a normal milestone
 
 ```powershell
 git switch develop
@@ -22,6 +33,8 @@ git status --short
 git switch -c feature/<milestone-name>
 git branch --show-current
 ```
+
+Verify that `develop` points to the latest validated tag before creating the new branch.
 
 ## Validation and final commit
 

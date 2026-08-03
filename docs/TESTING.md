@@ -5,6 +5,16 @@
 - Release build succeeds against RimWorld 1.6 managed assemblies.
 - Output contains only the add-on assembly and no copied RimWorld or Harmony DLL.
 
+## Final package
+
+- `package-mod.cmd` performs a Release build unless `-SkipBuild` is supplied.
+- The archive name uses the version declared in `About/About.xml`.
+- The ZIP contains exactly one installable root folder named `NiceInventoryTab-AddOn-Preview`.
+- Required runtime files are present: `About/About.xml`, `LoadFolders.xml` and the compiled DLL.
+- Optional runtime content is included only from the approved directories.
+- Source, documentation, tools, debug symbols, build intermediates and repository metadata are absent.
+- The completed ZIP is reopened and validated before success is reported.
+
 ## Load order
 
 - Harmony loads before the add-on.

@@ -1,7 +1,8 @@
 [CmdletBinding()]
 param(
     [string]$RepositoryRoot,
-    [string]$ExpectedVersion
+    [string]$ExpectedVersion,
+    [switch]$RequirePublicationReady
 )
 
 Set-StrictMode -Version Latest
@@ -39,6 +40,9 @@ $required = @(
     "About/About.xml",
     "LoadFolders.xml",
     "Source/NiceInventoryTabAddOnPreview/NiceInventoryTabAddOnPreview.csproj",
+    "package-mod.cmd",
+    "tools/package-mod.ps1",
+    "docs/PACKAGING.md",
     "docs/PROJECT_STATE.md",
     "docs/ROADMAP.md",
     "docs/TESTING_CURRENT.md",
@@ -64,9 +68,102 @@ foreach ($name in @("Version", "AssemblyVersion", "FileVersion")) {
     if ($value -eq $numeric) { Pass "$name matches '$numeric'." } else { Fail "$name is '$value'; expected '$numeric'." }
 }
 
+
+$gitignorePath = Join-Path $RepositoryRoot ".gitignore"
+if (Test-Path -LiteralPath $gitignorePath -PathType Leaf) {
+    $gitignoreText = Get-Content -LiteralPath $gitignorePath -Raw -Encoding UTF8
+    if ($gitignoreText -match '(?m)^dist/$') { Pass "Generated package directory is ignored." } else { Fail "Missing dist/ entry in .gitignore." }
+}
+else {
+    Fail "Missing required file: .gitignore"
+}
+
+$packageWrapperPath = Join-Path $RepositoryRoot "package-mod.cmd"
+if (Test-Path -LiteralPath $packageWrapperPath -PathType Leaf) {
+    $packageWrapperText = Get-Content -LiteralPath $packageWrapperPath -Raw -Encoding UTF8
+    if ($packageWrapperText.Contains('-RepositoryRoot "%~dp0."')) {
+        Pass "Package wrapper passes a quote-safe repository path."
+    }
+    else {
+        Fail 'Package wrapper must pass -RepositoryRoot "%~dp0." to avoid a trailing quote on Windows.'
+    }
+}
+
+$packageScriptPath = Join-Path $RepositoryRoot "tools/package-mod.ps1"
+if (Test-Path -LiteralPath $packageScriptPath -PathType Leaf) {
+    $packageScriptText = Get-Content -LiteralPath $packageScriptPath -Raw -Encoding UTF8
+    foreach ($expectedFragment in @(
+        'NiceInventoryTab-AddOn-Preview',
+        'NiceInventoryTabAddOnPreview.dll',
+        'CreateFromDirectory',
+        'OpenRead'
+    )) {
+        if ($packageScriptText.Contains($expectedFragment)) { Pass "Package generator contains '$expectedFragment'." } else { Fail "Package generator is missing '$expectedFragment'." }
+    }
+}
+
 $packageIds = @($about.ModMetaData.modDependencies.li.packageId)
 foreach ($requiredPackage in @("brrainz.harmony", "Andromeda.NiceInventoryTab")) {
     if ($packageIds -contains $requiredPackage) { Pass "Dependency declared: $requiredPackage" } else { Fail "Missing dependency: $requiredPackage" }
+}
+
+
+if ($RequirePublicationReady) {
+    $projectStateText = Get-Content -LiteralPath (Join-Path $RepositoryRoot "docs/PROJECT_STATE.md") -Raw -Encoding UTF8
+    $roadmapText = Get-Content -LiteralPath (Join-Path $RepositoryRoot "docs/ROADMAP.md") -Raw -Encoding UTF8
+    $testingCurrentText = Get-Content -LiteralPath (Join-Path $RepositoryRoot "docs/TESTING_CURRENT.md") -Raw -Encoding UTF8
+
+    if ($projectStateText -match '(?m)^- Status: validated and closed$') {
+        Pass "Project state marks the milestone as validated and closed."
+    }
+    else {
+        Fail "Project state is not publication-ready."
+    }
+
+    if ($projectStateText.Contains('Tag: `v' + $version + '`')) {
+        Pass "Project state records tag v$version."
+    }
+    else {
+        Fail "Project state does not record tag v$version."
+    }
+
+    if ($roadmapText -match [regex]::Escape("### $version - Establish project foundation") -and
+        $roadmapText.Contains('## Validated milestones')) {
+        Pass "Roadmap records the milestone under validated milestones."
+    }
+    else {
+        Fail "Roadmap does not record the current milestone as validated."
+    }
+
+    if ($testingCurrentText -match '(?m)^Status: validated locally after `r3`; milestone closed for publication\.$') {
+        Pass "Current testing records the completed local validation."
+    }
+    else {
+        Fail "Current testing does not record a completed validation."
+    }
+
+    $obsoleteMarkers = @(
+        'awaiting local validation',
+        'ready for local build and validation',
+        'packaging correction awaiting local retest'
+    )
+
+    foreach ($marker in $obsoleteMarkers) {
+        $found = $false
+        foreach ($documentText in @($projectStateText, $roadmapText, $testingCurrentText)) {
+            if ($documentText.IndexOf($marker, [StringComparison]::OrdinalIgnoreCase) -ge 0) {
+                $found = $true
+                break
+            }
+        }
+
+        if ($found) {
+            Fail "Publication documents still contain obsolete marker: $marker"
+        }
+        else {
+            Pass "Publication documents omit obsolete marker: $marker"
+        }
+    }
 }
 
 if ($failures.Count -gt 0) {

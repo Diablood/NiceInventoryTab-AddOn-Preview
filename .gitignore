@@ -9,3 +9,4 @@
 *.patch
 *.user
 *.suo
+dist/

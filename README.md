@@ -1,12 +1,22 @@
 # Nice Inventory Tab Add-on: Preview
 
-RimWorld 1.6 add-on for **Nice Inventory Tab** that will add a rotatable preview of the selected equipped pawn.
+RimWorld 1.6 add-on for **Nice Inventory Tab** that adds a rotatable preview of the selected equipped pawn without modifying the original mod.
 
-## Current milestone
+## Project status
 
-`0.1.0-dev - Establish project foundation`
+Latest validated milestone:
 
-This first milestone provides the repository structure, build configuration, compatibility bootstrap, project documentation and consistency checks. The visible pawn preview is deliberately reserved for the next functional milestone.
+```text
+0.1.0-dev - Establish project foundation
+```
+
+Next milestone:
+
+```text
+0.1.1-dev - Add rotatable pawn preview prototype
+```
+
+The foundation milestone provides the repository structure, build configuration, compatibility bootstrap, clean player-package generator, project documentation and consistency checks. The visible preview is deliberately reserved for the next functional milestone.
 
 ## Requirements
 
@@ -30,6 +40,18 @@ The default paths match the maintainer's current RimWorld installation. A differ
 ```
 
 The compiled assembly is written to `1.6/Assemblies/`.
+
+## Clean RimWorld package
+
+Build and generate the player-facing ZIP with:
+
+```powershell
+.\package-mod.cmd
+```
+
+The archive is written to `dist/` and contains only the installable mod folder. Source code, documentation, tools, debug symbols and repository metadata are excluded and validated before success is reported.
+
+See [`docs/PACKAGING.md`](docs/PACKAGING.md).
 
 ## Development workflow
 
