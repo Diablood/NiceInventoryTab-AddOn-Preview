@@ -1,0 +1,11 @@
+.vs/
+.vscode/
+.idea/
+**/bin/
+**/obj/
+1.6/Assemblies/*.dll
+1.6/Assemblies/*.pdb
+*.zip
+*.patch
+*.user
+*.suo

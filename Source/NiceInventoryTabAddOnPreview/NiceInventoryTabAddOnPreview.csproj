@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net472</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <Nullable>disable</Nullable>
+        <AssemblyName>NiceInventoryTabAddOnPreview</AssemblyName>
+        <RootNamespace>NiceInventoryTabAddOnPreview</RootNamespace>
+        <Version>0.1.0.0</Version>
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+        <FileVersion>0.1.0.0</FileVersion>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <GenerateDocumentationFile>false</GenerateDocumentationFile>
+        <OutputPath>..\..\1.6\Assemblies\</OutputPath>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <RimWorldManagedDir Condition="'$(RimWorldManagedDir)' == ''">D:\SteamLibrary\steamapps\common\RimWorld\RimWorldWin64_Data\Managed</RimWorldManagedDir>
+        <HarmonyAssemblyDir Condition="'$(HarmonyAssemblyDir)' == ''">D:\SteamLibrary\steamapps\workshop\content\294100\2009463077\Current\Assemblies</HarmonyAssemblyDir>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Reference Include="0Harmony">
+            <HintPath>$(HarmonyAssemblyDir)\0Harmony.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="Assembly-CSharp">
+            <HintPath>$(RimWorldManagedDir)\Assembly-CSharp.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="UnityEngine.CoreModule">
+            <HintPath>$(RimWorldManagedDir)\UnityEngine.CoreModule.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="UnityEngine.IMGUIModule">
+            <HintPath>$(RimWorldManagedDir)\UnityEngine.IMGUIModule.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+    </ItemGroup>
+</Project>
