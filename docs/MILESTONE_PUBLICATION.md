@@ -12,7 +12,7 @@
 - Run `package-mod.cmd` and inspect the clean installable ZIP described in [`PACKAGING.md`](PACKAGING.md).
 - Check `git diff --cached --check`.
 
-## Normal publication order
+## Normal development publication
 
 1. Commit the validated feature branch.
 2. Fast-forward it into `develop`.
@@ -20,26 +20,32 @@
 4. Create one annotated final tag.
 5. Push the tag.
 
-## Initial empty-repository publication
+## Initial stable Workshop publication
 
-The first milestone is exceptional because no integration branch exists yet:
+The first Workshop release has an additional dependency: Steam creates the real `About/PublishedFileId.txt` only after the first successful upload.
 
-1. Create and commit the milestone on its dedicated feature branch.
-2. Create `develop` at that validated commit.
-3. Push `develop` before the optional feature branch.
-4. Configure `develop` as the GitHub default branch during pre-`1.0.0` development.
-5. Create and push the annotated milestone tag from the same commit.
-6. Leave `main` reserved for the first stable release.
+1. Prepare and validate `1.0.0` on `feature/initial-workshop-release`.
+2. Generate and stage the clean local mod with `stage-workshop.cmd`.
+3. Upload the item privately or unlisted through RimWorld.
+4. Copy the generated `PublishedFileId.txt` back into the repository.
+5. Record the Workshop URL and identifier.
+6. Rerun all release checks and create the final release commit.
+7. Fast-forward the release commit into `develop`.
+8. Fast-forward `main` from `develop`.
+9. Create and push the unique annotated tag `v1.0.0`.
+10. Make the Workshop item public after the page and dependencies are verified.
 
-The first milestone does not require an artificial merge commit. The feature branch, `develop` and the final tag must all resolve to the same validated commit.
+The complete procedure is defined in [`WORKSHOP_PUBLICATION.md`](WORKSHOP_PUBLICATION.md).
 
 ## Permanent rules
 
 - Do not publish before explicit local validation.
 - Do not tag local revisions such as `r1`.
 - Do not merge with an incidental merge commit.
-- Do not work directly on `main` or `develop` after repository initialization.
+- Do not work directly on `main` or `develop`.
 - Use complete ready-to-replace files in local revision archives.
 - Development revision snapshots exclude `.git`, `bin`, `obj`, DLL, PDB, ZIP and patch files.
-- Final player packages are generated only through `package-mod.cmd` and include the compiled DLL but no development content.
-- A new milestone starts from the latest validated tag through `develop`.
+- Final player packages are generated only through `package-mod.cmd`.
+- `About/Preview.png` is required for Workshop-ready packages.
+- Never create a fake `PublishedFileId.txt`.
+- Once Steam creates the identifier, preserve it in the repository, generated package and local staging folder.

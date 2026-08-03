@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.0.0
+
+- Publish the first stable release for RimWorld 1.6.
+- Add an integrated preview of the selected pawn or corpse beside Nice Inventory Tab.
+- Add a toolbar toggle that shows or hides the preview and its reserved width.
+- Rotate the portrait through all four orientations with left and right controls.
+- Close the preview automatically with the host inventory tab.
+- Validate Nice Inventory Tab's runtime compatibility surface before applying patches.
+- Disable safely without modifying the original mod when the expected compatibility surface is unavailable.
+- Add English and French player-facing tooltips.
+- Add the polished primary Workshop image and the secondary in-game screenshot.
+- Add clean package and Workshop staging workflows.
+- Publish Steam Workshop item `3777164660`.
+- Preserve the real Steam `About/PublishedFileId.txt` for future updates.
+
 ## 0.1.1-dev
 
 - Validate Nice Inventory Tab's `Prefix` and empty `AddonCheckBoxes` compatibility hooks before activation.
@@ -13,12 +28,9 @@
 - Replace textual controls and cardinal-direction labels with RimWorld's vanilla left and right arrow textures plus localized tooltips.
 - Lower the integrated panel below the tab close control.
 - Remove the redundant pawn-name header and the add-on's custom rotation textures.
-- Tighten the preview-to-inventory spacing and use a window-style outer panel background.
 - Align the preview directly on the base tab boundary so Nice Inventory Tab's existing internal margin defines the visible inter-column spacing.
 - Map the left arrow to clockwise rotation and the right arrow to counterclockwise rotation.
-- Add English and French player-facing text.
-- Disable safely and log one explicit error when compatibility or rendering fails.
-- Add the validated integrated-preview screenshot for README and Workshop preparation.
+- Add the validated integrated-preview screenshot for release preparation.
 
 ## 0.1.0-dev
 
@@ -26,7 +38,5 @@
 - Declare Harmony and Nice Inventory Tab dependencies.
 - Add the `net472` build project and build command.
 - Add a clean RimWorld package generator with a runtime allowlist and ZIP layout validation.
-- Harden the package wrapper against quoted Windows paths ending with a directory separator.
 - Add a Harmony compatibility bootstrap using runtime type discovery.
-- Add initial rotation state support.
 - Add project workflow, roadmap, testing and publication documentation.

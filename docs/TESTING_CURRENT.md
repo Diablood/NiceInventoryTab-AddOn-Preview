@@ -1,55 +1,40 @@
 # Current testing
 
-## 0.1.1-dev
+## 1.0.0
 
-Status: validated locally after `r8`; milestone closed for publication.
+Status: validated locally after `r3`; milestone closed for publication.
 
-### Automated and build validation
+### Automated and release validation
 
-1. `tools/check-project-consistency.cmd -ExpectedVersion 0.1.1-dev` passed.
-2. The project versions matched `0.1.1.0`.
-3. The compatibility and preview source guards passed.
-4. `build.cmd` completed a successful Release build.
-5. `package-mod.cmd` created `dist/NiceInventoryTab-AddOn-Preview-0.1.1-dev.zip`.
-6. The clean archive contained the runtime mod files and excluded source, documentation, tooling and screenshots.
+1. `tools/check-project-consistency.cmd -ExpectedVersion 1.0.0` passed.
+2. `About/About.xml` and the project versions resolve to `1.0.0` / `1.0.0.0`.
+3. `About/Preview.png` and `docs/images/workshop-main.png` are `1280 × 720` and remain below 1 MB.
+4. `docs/images/workshop-preview.png` remains the secondary in-game screenshot.
+5. The stable publication procedure contains literal fast-forward commands for the release branch, `develop` and `main`.
+6. The clean package and Workshop staging tools preserve the Workshop identifier.
+7. The generated package excludes source, documentation, tools, PDB files and repository metadata.
 
-### Startup and compatibility validation
+### Functional validation baseline
 
-7. Harmony, Nice Inventory Tab and the add-on loaded in the required order.
-8. The log contained the compatibility-bootstrap and integrated-preview initialization messages.
-9. No compatibility-signature failure or red startup error occurred.
-10. Nice Inventory Tab remained functional when the preview was visible or hidden.
+8. The integrated preview behavior remains unchanged from the accepted `0.1.1-dev-r8` implementation.
+9. The preview opens directly beside Nice Inventory Tab.
+10. The visibility toggle expands and restores the tab width correctly.
+11. The preview follows the selected pawn or corpse.
+12. Left and right controls rotate through all four orientations.
+13. Closing Nice Inventory Tab removes the preview immediately.
+14. No overlap remains with the Equipment block or close control.
 
-### Functional validation
+### Workshop publication validation
 
-11. The preview rendered directly beside Nice Inventory Tab rather than in a popup.
-12. Closing the inventory tab removed the preview immediately.
-13. Hiding and showing the preview restored and expanded the tab width correctly.
-14. The width remained stable over repeated draw frames.
-15. The preview followed the selected living pawn and supported corpse selection.
-16. All four orientations rendered without changing the pawn's actual map rotation.
-17. The left arrow rotated clockwise and the right arrow rotated counterclockwise.
-18. The English and French tooltips matched those actions.
-
-### Final presentation validation
-
-19. The preview began below the inventory-tab close control.
-20. The redundant pawn name and cardinal-direction labels were absent.
-21. The outer command-area background and inner portrait background were accepted.
-22. The current portrait scale was accepted for the prototype.
-23. The final `PanelGap = 0f` reused Nice Inventory Tab's own right margin.
-24. The Equipment-to-preview spacing visually matched the Clothing-to-Equipment spacing.
-25. The preview border did not overlap the Equipment block.
-26. The final representative screenshot was captured as `docs/images/workshop-preview.png`.
+15. The first Workshop upload completed successfully.
+16. Steam created item ID `3777164660`.
+17. The published page is `https://steamcommunity.com/sharedfiles/filedetails/?id=3777164660`.
+18. Steam's generated `About/PublishedFileId.txt` was copied into the repository.
+19. The repository ID, staged ID and Workshop URL refer to the same item.
+20. Future staging operations preserve the identifier so updates target the existing page.
 
 ### Known limitations
 
 - The standard portrait renderer may omit the equipped weapon.
 - Preview visibility and orientation are not persisted beyond the current session.
 - Alternative portrait renderers have not received dedicated compatibility adaptations.
-
-## Next validation target
-
-```text
-0.1.2-dev - Prepare initial Workshop release
-```

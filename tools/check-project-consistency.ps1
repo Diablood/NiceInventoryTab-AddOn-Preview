@@ -15,18 +15,94 @@ if ([string]::IsNullOrWhiteSpace($RepositoryRoot)) {
 $RepositoryRoot = (Resolve-Path -LiteralPath $RepositoryRoot).Path
 $failures = New-Object System.Collections.Generic.List[string]
 
-function Pass([string]$Message) { Write-Host "[PASS] $Message" -ForegroundColor Green }
-function Fail([string]$Message) { [void]$failures.Add($Message); Write-Host "[FAIL] $Message" -ForegroundColor Red }
+function Pass([string]$Message) {
+    Write-Host "[PASS] $Message" -ForegroundColor Green
+}
+
+function Fail([string]$Message) {
+    [void]$failures.Add($Message)
+    Write-Host "[FAIL] $Message" -ForegroundColor Red
+}
+
+function Read-Text([string]$RelativePath) {
+    $path = Join-Path $RepositoryRoot $RelativePath
+    if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
+        return $null
+    }
+
+    return Get-Content -LiteralPath $path -Raw -Encoding UTF8
+}
+
+function Assert-Contains {
+    param(
+        [string]$Text,
+        [string]$Fragment,
+        [string]$Description
+    )
+
+    if ($null -ne $Text -and $Text.Contains($Fragment)) {
+        Pass "$Description contains '$Fragment'."
+    }
+    else {
+        Fail "$Description is missing '$Fragment'."
+    }
+}
+
+function Test-WorkshopPreview {
+    param([string]$RelativePath)
+
+    $path = Join-Path $RepositoryRoot $RelativePath
+    if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
+        Fail "Missing Workshop preview: $RelativePath"
+        return
+    }
+
+    $file = Get-Item -LiteralPath $path
+    if ($file.Length -lt 1MB) {
+        Pass "Workshop preview remains below 1 MB: $($file.Length) bytes."
+    }
+    else {
+        Fail "Workshop preview is $($file.Length) bytes; it must remain below 1 MB."
+    }
+
+    try {
+        Add-Type -AssemblyName System.Drawing
+        $image = [System.Drawing.Image]::FromFile($path)
+        try {
+            $validSize =
+                ($image.Width -eq 640 -and $image.Height -eq 360) -or
+                ($image.Width -eq 1280 -and $image.Height -eq 720)
+
+            if ($validSize) {
+                Pass "Workshop preview dimensions are $($image.Width)x$($image.Height)."
+            }
+            else {
+                Fail "Workshop preview dimensions are $($image.Width)x$($image.Height); expected 640x360 or 1280x720."
+            }
+        }
+        finally {
+            $image.Dispose()
+        }
+    }
+    catch {
+        Fail "Could not inspect Workshop preview: $($_.Exception.Message)"
+    }
+}
 
 Write-Host "Nice Inventory Tab Add-on: Preview consistency check"
 Write-Host "Repository: $RepositoryRoot"
 Write-Host ""
 
 $markdownFiles = @()
-$readme = Join-Path $RepositoryRoot "README.md"
-if (Test-Path -LiteralPath $readme) { $markdownFiles += Get-Item -LiteralPath $readme }
-$docs = Join-Path $RepositoryRoot "docs"
-if (Test-Path -LiteralPath $docs) { $markdownFiles += Get-ChildItem -LiteralPath $docs -Filter "*.md" -File -Recurse }
+$readmePath = Join-Path $RepositoryRoot "README.md"
+if (Test-Path -LiteralPath $readmePath -PathType Leaf) {
+    $markdownFiles += Get-Item -LiteralPath $readmePath
+}
+
+$docsPath = Join-Path $RepositoryRoot "docs"
+if (Test-Path -LiteralPath $docsPath -PathType Container) {
+    $markdownFiles += Get-ChildItem -LiteralPath $docsPath -Filter "*.md" -File -Recurse
+}
 
 $tabFiles = @()
 foreach ($file in $markdownFiles) {
@@ -34,10 +110,18 @@ foreach ($file in $markdownFiles) {
         $tabFiles += $file.FullName
     }
 }
-if ($tabFiles.Count -eq 0) { Pass "Markdown files contain no literal tab characters." } else { Fail "Literal tabs found: $($tabFiles -join ', ')" }
+
+if ($tabFiles.Count -eq 0) {
+    Pass "Markdown files contain no literal tab characters."
+}
+else {
+    Fail "Literal tabs found: $($tabFiles -join ', ')"
+}
 
 $required = @(
     "About/About.xml",
+    "About/Preview.png",
+    "About/ModIcon.png",
     "LoadFolders.xml",
     "Source/NiceInventoryTabAddOnPreview/NiceInventoryTabAddOnPreview.csproj",
     "Source/NiceInventoryTabAddOnPreview/Bootstrap.cs",
@@ -48,76 +132,140 @@ $required = @(
     "Languages/English/Keyed/NiceInventoryTabAddOnPreview.xml",
     "Languages/French/Keyed/NiceInventoryTabAddOnPreview.xml",
     "package-mod.cmd",
+    "stage-workshop.cmd",
     "tools/package-mod.ps1",
+    "tools/stage-workshop.ps1",
     "docs/PACKAGING.md",
+    "docs/WORKSHOP_DESCRIPTION.md",
+    "docs/WORKSHOP_PUBLICATION.md",
     "docs/PROJECT_STATE.md",
     "docs/ROADMAP.md",
     "docs/TESTING_CURRENT.md",
     "docs/TESTING.md",
     "docs/CHANGELOG.md",
+    "docs/images/workshop-main.png",
     "docs/images/workshop-preview.png"
 )
+
 foreach ($relative in $required) {
-    if (Test-Path -LiteralPath (Join-Path $RepositoryRoot $relative) -PathType Leaf) { Pass "Required file exists: $relative" } else { Fail "Missing required file: $relative" }
+    if (Test-Path -LiteralPath (Join-Path $RepositoryRoot $relative) -PathType Leaf) {
+        Pass "Required file exists: $relative"
+    }
+    else {
+        Fail "Missing required file: $relative"
+    }
 }
 
-[xml]$about = Get-Content -LiteralPath (Join-Path $RepositoryRoot "About/About.xml") -Raw -Encoding UTF8
-$version = [string]$about.ModMetaData.modVersion
-if ($version -match '^\d+\.\d+\.\d+-dev$') { Pass "About mod version is '$version'." } else { Fail "Invalid mod version '$version'." }
-if (-not [string]::IsNullOrWhiteSpace($ExpectedVersion)) {
-    if ($version -eq $ExpectedVersion) { Pass "Requested milestone version matches '$ExpectedVersion'." } else { Fail "Requested version is '$ExpectedVersion' but About uses '$version'." }
+$aboutPath = Join-Path $RepositoryRoot "About/About.xml"
+$about = $null
+$version = $null
+
+try {
+    [xml]$about = Get-Content -LiteralPath $aboutPath -Raw -Encoding UTF8
+    $version = [string]$about.ModMetaData.modVersion
+}
+catch {
+    Fail "About/About.xml is invalid: $($_.Exception.Message)"
 }
 
-$numeric = $version -replace '-dev$', '.0'
-[xml]$project = Get-Content -LiteralPath (Join-Path $RepositoryRoot "Source/NiceInventoryTabAddOnPreview/NiceInventoryTabAddOnPreview.csproj") -Raw -Encoding UTF8
-$group = @($project.Project.PropertyGroup) | Where-Object { $_.Version } | Select-Object -First 1
-foreach ($name in @("Version", "AssemblyVersion", "FileVersion")) {
-    $value = [string]$group.$name
-    if ($value -eq $numeric) { Pass "$name matches '$numeric'." } else { Fail "$name is '$value'; expected '$numeric'." }
-}
-
-$referenceNames = @($project.Project.ItemGroup.Reference | ForEach-Object { [string]$_.Include })
-if ($referenceNames -contains "UnityEngine.TextRenderingModule") {
-    Pass "UnityEngine.TextRenderingModule reference is declared."
+if (-not [string]::IsNullOrWhiteSpace($version) -and
+    $version -match '^\d+\.\d+\.\d+(-dev)?$') {
+    Pass "About mod version is '$version'."
 }
 else {
-    Fail "Missing UnityEngine.TextRenderingModule project reference."
+    Fail "Invalid mod version '$version'."
 }
 
+if (-not [string]::IsNullOrWhiteSpace($ExpectedVersion)) {
+    if ($version -eq $ExpectedVersion) {
+        Pass "Requested milestone version matches '$ExpectedVersion'."
+    }
+    else {
+        Fail "Requested version is '$ExpectedVersion' but About uses '$version'."
+    }
+}
+
+$numeric = $null
+if ($version -match '^(?<base>\d+\.\d+\.\d+)(?:-dev)?$') {
+    $numeric = "$($Matches['base']).0"
+}
+
+$projectPath = Join-Path $RepositoryRoot "Source/NiceInventoryTabAddOnPreview/NiceInventoryTabAddOnPreview.csproj"
+$project = $null
+try {
+    [xml]$project = Get-Content -LiteralPath $projectPath -Raw -Encoding UTF8
+}
+catch {
+    Fail "C# project XML is invalid: $($_.Exception.Message)"
+}
+
+if ($null -ne $project -and -not [string]::IsNullOrWhiteSpace($numeric)) {
+    $group = @($project.Project.PropertyGroup) | Where-Object { $_.Version } | Select-Object -First 1
+    foreach ($name in @("Version", "AssemblyVersion", "FileVersion")) {
+        $value = [string]$group.$name
+        if ($value -eq $numeric) {
+            Pass "$name matches '$numeric'."
+        }
+        else {
+            Fail "$name is '$value'; expected '$numeric'."
+        }
+    }
+
+    $referenceNames = @($project.Project.ItemGroup.Reference | ForEach-Object { [string]$_.Include })
+    if ($referenceNames -contains "UnityEngine.TextRenderingModule") {
+        Pass "UnityEngine.TextRenderingModule reference is declared."
+    }
+    else {
+        Fail "Missing UnityEngine.TextRenderingModule project reference."
+    }
+}
+
+Test-WorkshopPreview -RelativePath "About/Preview.png"
+Test-WorkshopPreview -RelativePath "docs/images/workshop-main.png"
 
 $gitignorePath = Join-Path $RepositoryRoot ".gitignore"
 if (Test-Path -LiteralPath $gitignorePath -PathType Leaf) {
     $gitignoreEntries = @(Get-Content -LiteralPath $gitignorePath -Encoding UTF8 | ForEach-Object { $_.Trim() })
-    if ($gitignoreEntries -contains 'dist/') { Pass "Generated package directory is ignored." } else { Fail "Missing dist/ entry in .gitignore." }
+    if ($gitignoreEntries -contains "dist/") {
+        Pass "Generated package directory is ignored."
+    }
+    else {
+        Fail "Missing dist/ entry in .gitignore."
+    }
 }
 else {
     Fail "Missing required file: .gitignore"
 }
 
-$packageWrapperPath = Join-Path $RepositoryRoot "package-mod.cmd"
-if (Test-Path -LiteralPath $packageWrapperPath -PathType Leaf) {
-    $packageWrapperText = Get-Content -LiteralPath $packageWrapperPath -Raw -Encoding UTF8
-    if ($packageWrapperText.Contains('-RepositoryRoot "%~dp0."')) {
-        Pass "Package wrapper passes a quote-safe repository path."
-    }
-    else {
-        Fail 'Package wrapper must pass -RepositoryRoot "%~dp0." to avoid a trailing quote on Windows.'
-    }
+$packageWrapperText = Read-Text "package-mod.cmd"
+Assert-Contains -Text $packageWrapperText -Fragment '-RepositoryRoot "%~dp0."' -Description "Package wrapper"
+
+$stageWrapperText = Read-Text "stage-workshop.cmd"
+Assert-Contains -Text $stageWrapperText -Fragment '-RepositoryRoot "%~dp0."' -Description "Workshop staging wrapper"
+Assert-Contains -Text $stageWrapperText -Fragment 'tools\stage-workshop.ps1' -Description "Workshop staging wrapper"
+
+$packageScriptText = Read-Text "tools/package-mod.ps1"
+foreach ($expectedFragment in @(
+    "NiceInventoryTab-AddOn-Preview",
+    "NiceInventoryTabAddOnPreview.dll",
+    "About/Preview.png",
+    "Assert-WorkshopPreview",
+    "CreateFromDirectory",
+    "OpenRead"
+)) {
+    Assert-Contains -Text $packageScriptText -Fragment $expectedFragment -Description "Package generator"
 }
 
-$packageScriptPath = Join-Path $RepositoryRoot "tools/package-mod.ps1"
-if (Test-Path -LiteralPath $packageScriptPath -PathType Leaf) {
-    $packageScriptText = Get-Content -LiteralPath $packageScriptPath -Raw -Encoding UTF8
-    foreach ($expectedFragment in @(
-        'NiceInventoryTab-AddOn-Preview',
-        'NiceInventoryTabAddOnPreview.dll',
-        'CreateFromDirectory',
-        'OpenRead'
-    )) {
-        if ($packageScriptText.Contains($expectedFragment)) { Pass "Package generator contains '$expectedFragment'." } else { Fail "Package generator is missing '$expectedFragment'." }
-    }
+$stageScriptText = Read-Text "tools/stage-workshop.ps1"
+foreach ($expectedFragment in @(
+    "PublishedFileId.txt",
+    "Workshop ID mismatch",
+    "package-mod.ps1",
+    "Expand-Archive",
+    "D:\SteamLibrary\steamapps\common\RimWorld\Mods"
+)) {
+    Assert-Contains -Text $stageScriptText -Fragment $expectedFragment -Description "Workshop staging generator"
 }
-
 
 $bootstrapPath = Join-Path $RepositoryRoot "Source/NiceInventoryTabAddOnPreview/Bootstrap.cs"
 $compatibilityPath = Join-Path $RepositoryRoot "Source/NiceInventoryTabAddOnPreview/CompatibilityTargets.cs"
@@ -223,10 +371,7 @@ foreach ($forbiddenPresentationFragment in @(
     }
 }
 
-$previewPanelText = $null
-if (Test-Path -LiteralPath $previewPanelPath -PathType Leaf) {
-    $previewPanelText = Get-Content -LiteralPath $previewPanelPath -Raw -Encoding UTF8
-}
+$previewPanelText = Read-Text "Source/NiceInventoryTabAddOnPreview/PreviewPanelPatch.cs"
 
 if ($null -ne $previewPanelText -and
     $previewPanelText -match '(?s)DrawRotationButton\(rotateLeftButton,\s*TexUI\.ArrowTexLeft.*?PreviewState\.RotateClockwise\(\)' -and
@@ -271,17 +416,58 @@ foreach ($languageFile in @(
     }
 }
 
-$packageIds = @($about.ModMetaData.modDependencies.li.packageId)
-foreach ($requiredPackage in @("brrainz.harmony", "Andromeda.NiceInventoryTab")) {
-    if ($packageIds -contains $requiredPackage) { Pass "Dependency declared: $requiredPackage" } else { Fail "Missing dependency: $requiredPackage" }
+if ($null -ne $about) {
+    $packageIds = @($about.ModMetaData.modDependencies.li.packageId)
+    foreach ($requiredPackage in @("brrainz.harmony", "Andromeda.NiceInventoryTab")) {
+        if ($packageIds -contains $requiredPackage) {
+            Pass "Dependency declared: $requiredPackage"
+        }
+        else {
+            Fail "Missing dependency: $requiredPackage"
+        }
+    }
 }
 
+$workshopDescriptionText = Read-Text "docs/WORKSHOP_DESCRIPTION.md"
+$frenchWorkshopHeading = "[h1]Fran$([char]0x00E7)ais[/h1]"
+foreach ($fragment in @(
+    "2009463077",
+    "3609897594",
+    "[h1]Nice Inventory Tab Add-on: Preview[/h1]",
+    $frenchWorkshopHeading
+)) {
+    Assert-Contains -Text $workshopDescriptionText -Fragment $fragment -Description "Workshop description"
+}
+
+$workshopPublicationText = Read-Text "docs/WORKSHOP_PUBLICATION.md"
+foreach ($fragment in @(
+    "PublishedFileId.txt",
+    "stage-workshop.cmd",
+    "git merge --ff-only develop",
+    "v1.0.0"
+)) {
+    Assert-Contains -Text $workshopPublicationText -Fragment $fragment -Description "Workshop publication procedure"
+}
+
+$optionalPublishedIdPath = Join-Path $RepositoryRoot "About/PublishedFileId.txt"
+if (Test-Path -LiteralPath $optionalPublishedIdPath -PathType Leaf) {
+    $optionalPublishedId = (Get-Content -LiteralPath $optionalPublishedIdPath -Raw -Encoding UTF8).Trim()
+    if ($optionalPublishedId -match '^\d+$') {
+        Pass "Optional Workshop ID is numeric: $optionalPublishedId."
+    }
+    else {
+        Fail "About/PublishedFileId.txt must contain only the numeric Steam Workshop item ID."
+    }
+}
+else {
+    Pass "No placeholder PublishedFileId.txt exists before first Workshop upload."
+}
 
 if ($RequirePublicationReady) {
-    $projectStateText = Get-Content -LiteralPath (Join-Path $RepositoryRoot "docs/PROJECT_STATE.md") -Raw -Encoding UTF8
-    $roadmapText = Get-Content -LiteralPath (Join-Path $RepositoryRoot "docs/ROADMAP.md") -Raw -Encoding UTF8
-    $testingCurrentText = Get-Content -LiteralPath (Join-Path $RepositoryRoot "docs/TESTING_CURRENT.md") -Raw -Encoding UTF8
-    $readmeText = Get-Content -LiteralPath (Join-Path $RepositoryRoot "README.md") -Raw -Encoding UTF8
+    $projectStateText = Read-Text "docs/PROJECT_STATE.md"
+    $roadmapText = Read-Text "docs/ROADMAP.md"
+    $testingCurrentText = Read-Text "docs/TESTING_CURRENT.md"
+    $readmeText = Read-Text "README.md"
 
     if ($projectStateText.Contains('- Version: `' + $version + '`') -and
         $projectStateText -match '(?m)^- Status: validated and closed$') {
@@ -298,56 +484,90 @@ if ($RequirePublicationReady) {
         Fail "Project state does not record tag v$version."
     }
 
-    if ($projectStateText.Contains('- Latest local validation revision: `r8`')) {
-        Pass "Project state records final local revision r8."
+    if ($roadmapText.Contains("### $version -") -and
+        $roadmapText.Contains("## Validated milestones")) {
+        Pass "Roadmap records $version under validated milestones."
     }
     else {
-        Fail "Project state does not record final local revision r8."
+        Fail "Roadmap does not record the current version as validated."
     }
 
-    if ($roadmapText.Contains('### ' + $version + ' - Add rotatable pawn preview prototype') -and
-        $roadmapText.Contains('## Validated milestones')) {
-        Pass "Roadmap records the milestone under validated milestones."
+    if ($testingCurrentText -match '(?m)^Status: validated locally after `r\d+`; milestone closed for publication\.$') {
+        Pass "Current testing records a completed local validation."
     }
     else {
-        Fail "Roadmap does not record the current milestone as validated."
+        Fail "Current testing does not record a completed local validation."
     }
 
-    if ($testingCurrentText -match '(?m)^Status: validated locally after `r8`; milestone closed for publication\.$') {
-        Pass "Current testing records the completed r8 validation."
+    if ($readmeText.Contains("docs/images/workshop-main.png") -and
+        $readmeText.Contains("docs/images/workshop-preview.png")) {
+        Pass "README references both Workshop images."
     }
     else {
-        Fail "Current testing does not record the completed r8 validation."
+        Fail "README does not reference both Workshop images."
     }
 
-    if ($readmeText.Contains('docs/images/workshop-preview.png')) {
-        Pass "README references the validated Workshop preview image."
-    }
-    else {
-        Fail "README does not reference docs/images/workshop-preview.png."
-    }
+    if ($version -notmatch '-dev$') {
+        $publishedIdPath = Join-Path $RepositoryRoot "About/PublishedFileId.txt"
+        if (Test-Path -LiteralPath $publishedIdPath -PathType Leaf) {
+            $publishedId = (Get-Content -LiteralPath $publishedIdPath -Raw -Encoding UTF8).Trim()
+            if ($publishedId -match '^\d+$') {
+                Pass "Stable release records Workshop ID $publishedId."
+            }
+            else {
+                Fail "About/PublishedFileId.txt does not contain a numeric Workshop ID."
+            }
 
-    $workshopPreviewPath = Join-Path $RepositoryRoot "docs/images/workshop-preview.png"
-    if (Test-Path -LiteralPath $workshopPreviewPath -PathType Leaf) {
-        Pass "Validated Workshop preview image exists."
-    }
-    else {
-        Fail "Missing validated Workshop preview image."
+            if ($projectStateText.Contains($publishedId)) {
+                Pass "Project state records the Workshop ID."
+            }
+            else {
+                Fail "Project state does not record the Workshop ID."
+            }
+
+            $expectedWorkshopUrl = "https://steamcommunity.com/sharedfiles/filedetails/?id=$publishedId"
+            if ($projectStateText.Contains($expectedWorkshopUrl)) {
+                Pass "Project state Workshop URL matches the published ID."
+            }
+            else {
+                Fail "Project state Workshop URL does not match About/PublishedFileId.txt."
+            }
+
+            $expectedSteamUrl = "steam://url/CommunityFilePage/$publishedId"
+            $aboutSteamUrl = [string]$about.ModMetaData.steamWorkshopUrl
+            if ($aboutSteamUrl -eq $expectedSteamUrl) {
+                Pass "About metadata Workshop URL matches the published ID."
+            }
+            else {
+                Fail "About metadata Workshop URL is '$aboutSteamUrl'; expected '$expectedSteamUrl'."
+            }
+        }
+        else {
+            Fail "Stable publication requires the real About/PublishedFileId.txt."
+        }
+
+        if ($projectStateText -match 'https://steamcommunity\.com/sharedfiles/filedetails/\?id=\d+') {
+            Pass "Project state records the Workshop URL."
+        }
+        else {
+            Fail "Project state does not record the Workshop URL."
+        }
     }
 
     $obsoleteMarkers = @(
-        'awaiting local validation',
-        'ready for local build and validation',
-        'packaging correction awaiting local retest',
-        'Status: `r8` prepared',
-        'Current implementation awaiting validation',
-        'Required validation'
+        "awaiting local validation",
+        "ready for local build and validation",
+        "release candidate `r1` prepared",
+        "local Workshop validation required",
+        "Required local validation",
+        "Current implementation awaiting validation"
     )
 
     foreach ($marker in $obsoleteMarkers) {
         $found = $false
         foreach ($documentText in @($projectStateText, $roadmapText, $testingCurrentText)) {
-            if ($documentText.IndexOf($marker, [StringComparison]::OrdinalIgnoreCase) -ge 0) {
+            if ($null -ne $documentText -and
+                $documentText.IndexOf($marker, [StringComparison]::OrdinalIgnoreCase) -ge 0) {
                 $found = $true
                 break
             }

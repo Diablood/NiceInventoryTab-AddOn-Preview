@@ -13,9 +13,6 @@ if ([string]::IsNullOrWhiteSpace($RepositoryRoot)) {
     $RepositoryRoot = Join-Path $PSScriptRoot ".."
 }
 else {
-    # Windows command-line parsing can preserve a trailing quote when a quoted
-    # argument ends with a directory separator. Normalize the received value
-    # before passing it to Resolve-Path.
     $RepositoryRoot = $RepositoryRoot.Trim().Trim('"')
 }
 
@@ -30,12 +27,53 @@ elseif (-not [IO.Path]::IsPathRooted($OutputDirectory)) {
 
 $OutputDirectory = [IO.Path]::GetFullPath($OutputDirectory)
 $aboutPath = Join-Path $RepositoryRoot "About/About.xml"
+$previewPath = Join-Path $RepositoryRoot "About/Preview.png"
+$modIconPath = Join-Path $RepositoryRoot "About/ModIcon.png"
 $loadFoldersPath = Join-Path $RepositoryRoot "LoadFolders.xml"
 $assemblyPath = Join-Path $RepositoryRoot "1.6/Assemblies/NiceInventoryTabAddOnPreview.dll"
 
-foreach ($requiredPath in @($aboutPath, $loadFoldersPath)) {
+function Assert-WorkshopPreview {
+    param([string]$Path)
+
+    if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) {
+        throw "Required Workshop preview not found: $Path"
+    }
+
+    $previewInfo = Get-Item -LiteralPath $Path
+    if ($previewInfo.Length -ge 1MB) {
+        throw "About/Preview.png must remain below 1 MB; current size is $($previewInfo.Length) bytes."
+    }
+
+    Add-Type -AssemblyName System.Drawing
+    $image = [System.Drawing.Image]::FromFile($Path)
+    try {
+        $validSize =
+            ($image.Width -eq 640 -and $image.Height -eq 360) -or
+            ($image.Width -eq 1280 -and $image.Height -eq 720)
+
+        if (-not $validSize) {
+            throw "About/Preview.png must be 640x360 or 1280x720; current size is $($image.Width)x$($image.Height)."
+        }
+    }
+    finally {
+        $image.Dispose()
+    }
+}
+
+foreach ($requiredPath in @($aboutPath, $previewPath, $modIconPath, $loadFoldersPath)) {
     if (-not (Test-Path -LiteralPath $requiredPath -PathType Leaf)) {
         throw "Required runtime file not found: $requiredPath"
+    }
+}
+
+Assert-WorkshopPreview -Path $previewPath
+
+
+$publishedFileIdPath = Join-Path $RepositoryRoot "About/PublishedFileId.txt"
+if (Test-Path -LiteralPath $publishedFileIdPath -PathType Leaf) {
+    $publishedFileId = (Get-Content -LiteralPath $publishedFileIdPath -Raw -Encoding UTF8).Trim()
+    if ($publishedFileId -notmatch '^\d+$') {
+        throw "About/PublishedFileId.txt must contain only the numeric Steam Workshop item ID."
     }
 }
 
@@ -135,6 +173,8 @@ try {
 
     $requiredStagedFiles = @(
         (Join-Path $stagedModRoot "About/About.xml"),
+        (Join-Path $stagedModRoot "About/Preview.png"),
+        (Join-Path $stagedModRoot "About/ModIcon.png"),
         (Join-Path $stagedModRoot "LoadFolders.xml"),
         (Join-Path $stagedModRoot "1.6/Assemblies/NiceInventoryTabAddOnPreview.dll")
     )
@@ -144,6 +184,8 @@ try {
             throw "Required packaged file not found: $requiredStagedFile"
         }
     }
+
+    Assert-WorkshopPreview -Path (Join-Path $stagedModRoot "About/Preview.png")
 
     foreach ($forbiddenName in $forbiddenTopLevelNames) {
         if (Test-Path -LiteralPath (Join-Path $stagedModRoot $forbiddenName)) {
@@ -173,6 +215,8 @@ try {
         $entries = @($archive.Entries | ForEach-Object { $_.FullName.Replace('\', '/') })
         $requiredEntries = @(
             "$packageFolderName/About/About.xml",
+            "$packageFolderName/About/Preview.png",
+            "$packageFolderName/About/ModIcon.png",
             "$packageFolderName/LoadFolders.xml",
             "$packageFolderName/1.6/Assemblies/NiceInventoryTabAddOnPreview.dll"
         )

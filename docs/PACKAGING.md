@@ -26,10 +26,10 @@ To package an already built assembly without rebuilding:
 
 ## Output
 
-For version `0.1.1-dev`, the generated archive is:
+For stable version `1.0.0`, the generated archive is:
 
 ```text
- dist/NiceInventoryTab-AddOn-Preview-0.1.1-dev.zip
+dist/NiceInventoryTab-AddOn-Preview-1.0.0.zip
 ```
 
 Its installable layout is:
@@ -37,7 +37,10 @@ Its installable layout is:
 ```text
 NiceInventoryTab-AddOn-Preview/
 ├── About/
-│   └── About.xml
+│   ├── About.xml
+│   ├── ModIcon.png
+│   ├── Preview.png
+│   └── PublishedFileId.txt     # present only after the first Workshop upload
 ├── 1.6/
 │   └── Assemblies/
 │       └── NiceInventoryTabAddOnPreview.dll
@@ -47,7 +50,29 @@ NiceInventoryTab-AddOn-Preview/
 └── LoadFolders.xml
 ```
 
+The package requires `About/Preview.png`, validates that it is `640 × 360` or `1280 × 720`, and rejects it when it reaches Steam's 1 MB preview limit.
+
 Optional runtime directories such as `Languages`, `Textures`, `Defs` and `Patches` are included automatically when they exist.
+
+## Workshop staging
+
+```powershell
+.\stage-workshop.cmd
+```
+
+This command:
+
+1. builds and validates the same clean ZIP;
+2. extracts it into RimWorld's local `Mods` directory;
+3. replaces only the generated add-on folder;
+4. preserves an existing `About/PublishedFileId.txt`;
+5. refuses to overwrite a conflicting Workshop identifier.
+
+The default target is:
+
+```text
+D:\SteamLibrary\steamapps\common\RimWorld\Mods\NiceInventoryTab-AddOn-Preview
+```
 
 ## Exclusions
 
@@ -58,6 +83,7 @@ The generated archive rejects development content, including:
 - build intermediates;
 - C# source and project files;
 - PDB, patch and nested ZIP files;
-- placeholder `.gitkeep` files.
+- placeholder `.gitkeep` files;
+- the full documentation screenshot under `docs/images`.
 
-The generator also reopens the completed ZIP and validates its required entries before reporting success.
+The generator reopens the completed ZIP and validates its required entries before reporting success.
