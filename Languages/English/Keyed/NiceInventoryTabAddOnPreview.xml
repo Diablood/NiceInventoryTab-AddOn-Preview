@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+    <NITAP_PreviewToggle>Show or hide the equipped pawn preview</NITAP_PreviewToggle>
+    <NITAP_PreviewTitle>Equipped pawn preview</NITAP_PreviewTitle>
+    <NITAP_NoPawnSelected>Select a pawn or corpse.</NITAP_NoPawnSelected>
+    <NITAP_RenderUnavailable>Preview unavailable for this pawn.</NITAP_RenderUnavailable>
+    <NITAP_RotateCounterclockwise>Rotate counterclockwise</NITAP_RotateCounterclockwise>
+    <NITAP_RotateClockwise>Rotate clockwise</NITAP_RotateClockwise>
+</LanguageData>

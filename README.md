@@ -2,21 +2,23 @@
 
 RimWorld 1.6 add-on for **Nice Inventory Tab** that adds a rotatable preview of the selected equipped pawn without modifying the original mod.
 
+![Integrated rotatable pawn preview](docs/images/workshop-preview.png)
+
 ## Project status
 
 Latest validated milestone:
 
 ```text
-0.1.0-dev - Establish project foundation
-```
-
-Next milestone:
-
-```text
 0.1.1-dev - Add rotatable pawn preview prototype
 ```
 
-The foundation milestone provides the repository structure, build configuration, compatibility bootstrap, clean player-package generator, project documentation and consistency checks. The visible preview is deliberately reserved for the next functional milestone.
+The preview is integrated directly beside Nice Inventory Tab, disappears with the tab and follows the currently selected pawn or corpse. Two vanilla arrow controls rotate the portrait through all four orientations without changing the pawn's map rotation.
+
+Next planned milestone:
+
+```text
+0.1.2-dev - Prepare initial Workshop release
+```
 
 ## Requirements
 
@@ -49,7 +51,7 @@ Build and generate the player-facing ZIP with:
 .\package-mod.cmd
 ```
 
-The archive is written to `dist/` and contains only the installable mod folder. Source code, documentation, tools, debug symbols and repository metadata are excluded and validated before success is reported.
+The archive is written to `dist/` and contains only the installable mod folder. Source code, documentation, tools, screenshots, debug symbols and repository metadata are excluded and validated before success is reported.
 
 See [`docs/PACKAGING.md`](docs/PACKAGING.md).
 

@@ -26,10 +26,10 @@ To package an already built assembly without rebuilding:
 
 ## Output
 
-For version `0.1.0-dev`, the generated archive is:
+For version `0.1.1-dev`, the generated archive is:
 
 ```text
- dist/NiceInventoryTab-AddOn-Preview-0.1.0-dev.zip
+ dist/NiceInventoryTab-AddOn-Preview-0.1.1-dev.zip
 ```
 
 Its installable layout is:
@@ -41,6 +41,9 @@ NiceInventoryTab-AddOn-Preview/
 ├── 1.6/
 │   └── Assemblies/
 │       └── NiceInventoryTabAddOnPreview.dll
+├── Languages/
+│   ├── English/Keyed/NiceInventoryTabAddOnPreview.xml
+│   └── French/Keyed/NiceInventoryTabAddOnPreview.xml
 └── LoadFolders.xml
 ```
 

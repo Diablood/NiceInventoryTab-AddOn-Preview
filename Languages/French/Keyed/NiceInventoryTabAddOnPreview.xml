@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+    <NITAP_PreviewToggle>Afficher ou masquer l’aperçu du colon équipé</NITAP_PreviewToggle>
+    <NITAP_PreviewTitle>Aperçu du colon équipé</NITAP_PreviewTitle>
+    <NITAP_NoPawnSelected>Sélectionnez un colon ou un cadavre.</NITAP_NoPawnSelected>
+    <NITAP_RenderUnavailable>Aperçu indisponible pour ce colon.</NITAP_RenderUnavailable>
+    <NITAP_RotateCounterclockwise>Faire pivoter dans le sens inverse des aiguilles d’une montre</NITAP_RotateCounterclockwise>
+    <NITAP_RotateClockwise>Faire pivoter dans le sens des aiguilles d’une montre</NITAP_RotateClockwise>
+</LanguageData>

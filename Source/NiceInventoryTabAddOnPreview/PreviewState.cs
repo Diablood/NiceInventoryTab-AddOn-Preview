@@ -4,9 +4,17 @@ namespace NiceInventoryTabAddOnPreview
 {
     internal static class PreviewState
     {
+        private static bool isVisible = true;
         private static Rot4 rotation = Rot4.South;
 
+        internal static bool IsVisible => isVisible;
+
         internal static Rot4 Rotation => rotation;
+
+        internal static void ToggleVisibility()
+        {
+            isVisible = !isVisible;
+        }
 
         internal static void RotateClockwise()
         {
