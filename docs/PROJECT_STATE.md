@@ -30,6 +30,7 @@
 - The zoom range, button mapping and portrait camera offset are covered by the repository consistency checks.
 - In-game testing with a Thrumbo confirmed zooming, full-body framing and the lowered visual center.
 - Startup testing confirmed the invalid metadata error is removed and the compatibility bootstrap initializes.
+- The primary Workshop image retains its original composition and now shows the minus and plus zoom controls.
 - The clean update package preserves Workshop item ID `3777164660`.
 
 ## Workshop assets

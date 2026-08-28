@@ -230,6 +230,15 @@ if ($null -ne $project -and -not [string]::IsNullOrWhiteSpace($numeric)) {
 Test-WorkshopPreview -RelativePath "About/Preview.png"
 Test-WorkshopPreview -RelativePath "docs/images/workshop-main.png"
 
+$aboutPreviewHash = (Get-FileHash -Algorithm SHA256 -LiteralPath (Join-Path $RepositoryRoot "About/Preview.png")).Hash
+$workshopMainHash = (Get-FileHash -Algorithm SHA256 -LiteralPath (Join-Path $RepositoryRoot "docs/images/workshop-main.png")).Hash
+if ($aboutPreviewHash -eq $workshopMainHash) {
+    Pass "About preview matches the primary Workshop image."
+}
+else {
+    Fail "About preview does not match the primary Workshop image."
+}
+
 $gitignorePath = Join-Path $RepositoryRoot ".gitignore"
 if (Test-Path -LiteralPath $gitignorePath -PathType Leaf) {
     $gitignoreEntries = @(Get-Content -LiteralPath $gitignorePath -Encoding UTF8 | ForEach-Object { $_.Trim() })
@@ -499,7 +508,7 @@ if ($RequirePublicationReady) {
     $readmeText = Read-Text "README.md"
 
     if ($projectStateText.Contains('- Version: `' + $version + '`') -and
-        $projectStateText -match '(?m)^- Status: validated and closed$') {
+        $projectStateText -match '(?m)^- Status: validated and closed\r?$') {
         Pass "Project state marks $version as validated and closed."
     }
     else {

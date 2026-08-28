@@ -46,6 +46,7 @@ Validated in game after local revision `r3` and prepared for publication as `v1.
 - Apply RimWorld's vanilla portrait camera offset so tall animals remain framed around their visible body.
 - Validate zooming and framing with a Thrumbo while preserving rotation and visibility behavior.
 - Remove unsupported top-level Workshop metadata that produced a RimWorld 1.6 startup XML error.
+- Refresh the primary Workshop image while preserving its existing composition.
 - Preserve the existing Workshop item identifier for the update.
 
 ## Later evaluation
