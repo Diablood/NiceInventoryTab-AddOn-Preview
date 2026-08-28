@@ -3,7 +3,7 @@
 ## Published item
 
 - Title: `Nice Inventory Tab Add-on: Preview`
-- Version: `1.0.0`
+- Version: `1.1.0`
 - Workshop ID: `3777164660`
 - Workshop URL: https://steamcommunity.com/sharedfiles/filedetails/?id=3777164660
 - Identifier file: `About/PublishedFileId.txt`
@@ -22,8 +22,8 @@ Use the two prepared images in this order:
 From the repository root:
 
 ```powershell
-.\tools\check-project-consistency.cmd -ExpectedVersion 1.0.0
-.\tools\check-project-consistency.cmd -ExpectedVersion 1.0.0 -RequirePublicationReady
+.\tools\check-project-consistency.cmd -ExpectedVersion 1.1.0
+.\tools\check-project-consistency.cmd -ExpectedVersion 1.1.0 -RequirePublicationReady
 .\build.cmd
 .\package-mod.cmd
 .\stage-workshop.cmd
@@ -44,7 +44,7 @@ Commit the validated release branch:
 ```powershell
 git add -A
 git diff --cached --check
-git commit -m "1.0.0 - Publish initial Workshop release"
+git commit -m "1.1.0 - Add zoom controls"
 ```
 
 Fast-forward the validated release branch into `develop`:
@@ -52,7 +52,7 @@ Fast-forward the validated release branch into `develop`:
 ```powershell
 git switch develop
 git pull --ff-only origin develop
-git merge --ff-only feature/initial-workshop-release
+git merge --ff-only feature/zoom-controls
 git push origin develop
 ```
 
@@ -68,11 +68,11 @@ git push origin main
 Create and push the unique annotated stable tag:
 
 ```powershell
-git tag -a v1.0.0 -m "1.0.0 - Publish initial Workshop release"
-git push origin v1.0.0
+git tag -a v1.1.0 -m "1.1.0 - Add zoom controls"
+git push origin v1.1.0
 ```
 
-Verify that `develop`, `main` and `v1.0.0` resolve to the same commit.
+Verify that `develop`, `main` and `v1.1.0` resolve to the same commit.
 
 ## Future Workshop updates
 

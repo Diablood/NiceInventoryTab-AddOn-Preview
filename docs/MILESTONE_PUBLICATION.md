@@ -20,6 +20,14 @@
 4. Create one annotated final tag.
 5. Push the tag.
 
+## Stable feature update publication
+
+1. Commit the validated `feature/*` branch.
+2. Fast-forward it into `develop` and push `develop`.
+3. Fast-forward `main` from `develop` and push `main`.
+4. Create and push the annotated stable tag.
+5. Verify that `develop`, `main` and the stable tag resolve to the same commit.
+
 ## Initial stable Workshop publication
 
 The first Workshop release has an additional dependency: Steam creates the real `About/PublishedFileId.txt` only after the first successful upload.

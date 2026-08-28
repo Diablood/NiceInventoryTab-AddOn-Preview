@@ -1,40 +1,41 @@
 # Current testing
 
-## 1.0.0
+## 1.1.0
 
 Status: validated locally after `r3`; milestone closed for publication.
 
 ### Automated and release validation
 
-1. `tools/check-project-consistency.cmd -ExpectedVersion 1.0.0` passed.
-2. `About/About.xml` and the project versions resolve to `1.0.0` / `1.0.0.0`.
-3. `About/Preview.png` and `docs/images/workshop-main.png` are `1280 × 720` and remain below 1 MB.
-4. `docs/images/workshop-preview.png` remains the secondary in-game screenshot.
-5. The stable publication procedure contains literal fast-forward commands for the release branch, `develop` and `main`.
-6. The clean package and Workshop staging tools preserve the Workshop identifier.
-7. The generated package excludes source, documentation, tools, PDB files and repository metadata.
+1. `tools/check-project-consistency.cmd -ExpectedVersion 1.1.0` passed.
+2. `tools/check-project-consistency.cmd -ExpectedVersion 1.1.0 -RequirePublicationReady` passed.
+3. `About/About.xml` and the project versions resolve to `1.1.0` / `1.1.0.0`.
+4. The Release build completed with zero warnings and zero errors.
+5. The clean `1.1.0` package passed its runtime allowlist and ZIP-layout validation.
+6. `About/About.xml` omits the unsupported top-level `steamWorkshopUrl` element.
+7. `About/PublishedFileId.txt` remains unchanged as `3777164660`.
 
-### Functional validation baseline
+### Functional validation
 
-8. The integrated preview behavior remains unchanged from the accepted `0.1.1-dev-r8` implementation.
-9. The preview opens directly beside Nice Inventory Tab.
-10. The visibility toggle expands and restores the tab width correctly.
-11. The preview follows the selected pawn or corpse.
-12. Left and right controls rotate through all four orientations.
-13. Closing Nice Inventory Tab removes the preview immediately.
-14. No overlap remains with the Equipment block or close control.
+8. The preview opens directly beside Nice Inventory Tab and follows the selected pawn or corpse.
+9. Vanilla minus and plus buttons appear at the top of the preview panel.
+10. Minus zooms out and plus zooms in from the unchanged 100% default.
+11. Zoom remains bounded between 25% and 200%.
+12. A Thrumbo can be reduced until its visible body fits inside the preview.
+13. RimWorld's vanilla `+0.3` camera offset lowers the animal and keeps its head in frame at closer zoom levels.
+14. Left and right controls continue to rotate through all four orientations.
+15. The visibility toggle continues to expand and restore the tab width correctly.
+16. Closing Nice Inventory Tab removes the preview immediately.
+17. No overlap occurs with the Equipment block or close control.
 
-### Workshop publication validation
+### Startup and update validation
 
-15. The first Workshop upload completed successfully.
-16. Steam created item ID `3777164660`.
-17. The published page is `https://steamcommunity.com/sharedfiles/filedetails/?id=3777164660`.
-18. Steam's generated `About/PublishedFileId.txt` was copied into the repository.
-19. The repository ID, staged ID and Workshop URL refer to the same item.
-20. Future staging operations preserve the identifier so updates target the existing page.
+18. RimWorld no longer reports the add-on's invalid root Workshop metadata at startup.
+19. The compatibility bootstrap initializes and attaches the integrated preview.
+20. The existing Workshop item ID and URL still agree.
+21. Package generation preserves the identifier so the update targets item `3777164660`.
 
 ### Known limitations
 
 - The standard portrait renderer may omit the equipped weapon.
-- Preview visibility and orientation are not persisted beyond the current session.
+- Preview visibility, orientation and zoom are not persisted beyond the current session.
 - Alternative portrait renderers have not received dedicated compatibility adaptations.

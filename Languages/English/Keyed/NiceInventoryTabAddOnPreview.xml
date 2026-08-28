@@ -4,6 +4,8 @@
     <NITAP_PreviewTitle>Equipped pawn preview</NITAP_PreviewTitle>
     <NITAP_NoPawnSelected>Select a pawn or corpse.</NITAP_NoPawnSelected>
     <NITAP_RenderUnavailable>Preview unavailable for this pawn.</NITAP_RenderUnavailable>
+    <NITAP_ZoomIn>Zoom in</NITAP_ZoomIn>
+    <NITAP_ZoomOut>Zoom out</NITAP_ZoomOut>
     <NITAP_RotateCounterclockwise>Rotate counterclockwise</NITAP_RotateCounterclockwise>
     <NITAP_RotateClockwise>Rotate clockwise</NITAP_RotateClockwise>
 </LanguageData>

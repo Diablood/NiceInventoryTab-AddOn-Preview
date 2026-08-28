@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.0
+
+- Add vanilla zoom-in and zoom-out controls at the top of the preview panel.
+- Allow very large modded animals and pawns to be scaled down until their full body fits the preview.
+- Apply RimWorld's vanilla portrait camera offset so pawns sit lower in the frame and tall heads remain visible longer while zooming.
+- Remove the unsupported top-level Workshop URL metadata that caused an XML startup error in RimWorld 1.6.
+
 ## 1.0.0
 
 - Publish the first stable release for RimWorld 1.6.

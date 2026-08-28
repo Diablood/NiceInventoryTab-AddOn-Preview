@@ -53,6 +53,11 @@
 - Closing the inventory tab removes the preview without a separate close operation.
 - The toolbar toggle changes portrait visibility and tab width together.
 - Preview follows the currently selected pawn or corpse.
+- Vanilla minus and plus controls are shown at the top of the preview.
+- Zoom starts at 100%, is bounded between 25% and 200%, and changes in 10% steps.
+- Minus zooms out and plus zooms in without changing the selected pawn.
+- RimWorld's vanilla portrait camera offset lowers the pawn within the frame.
+- Large animals such as Thrumbos can be reduced until their visible body fits without premature head clipping.
 - Two vanilla arrow controls rotate through all four orientations.
 - The left arrow rotates clockwise and the right arrow rotates counterclockwise.
 - No cardinal-direction label or duplicated pawn name is shown.
@@ -69,6 +74,7 @@
 - The Equipment-to-preview spacing matches the host tab's existing inter-column spacing.
 - The preview border never overlaps the Equipment block or the close control.
 - GUI font and anchor state are restored after custom drawing.
+- The zoom row remains above the portrait and the rotation row remains below it.
 
 ## Release documentation
 

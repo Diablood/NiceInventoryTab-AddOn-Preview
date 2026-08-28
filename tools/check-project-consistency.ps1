@@ -168,6 +168,13 @@ catch {
     Fail "About/About.xml is invalid: $($_.Exception.Message)"
 }
 
+if ($null -ne $about -and $null -eq $about.ModMetaData.SelectSingleNode("steamWorkshopUrl")) {
+    Pass "About metadata omits the unsupported top-level Workshop URL."
+}
+else {
+    Fail "About metadata contains an unsupported top-level Workshop URL."
+}
+
 if (-not [string]::IsNullOrWhiteSpace($version) -and
     $version -match '^\d+\.\d+\.\d+(-dev)?$') {
     Pass "About mod version is '$version'."
@@ -271,12 +278,14 @@ $bootstrapPath = Join-Path $RepositoryRoot "Source/NiceInventoryTabAddOnPreview/
 $compatibilityPath = Join-Path $RepositoryRoot "Source/NiceInventoryTabAddOnPreview/CompatibilityTargets.cs"
 $togglePatchPath = Join-Path $RepositoryRoot "Source/NiceInventoryTabAddOnPreview/PreviewTogglePatch.cs"
 $previewPanelPath = Join-Path $RepositoryRoot "Source/NiceInventoryTabAddOnPreview/PreviewPanelPatch.cs"
+$previewStatePath = Join-Path $RepositoryRoot "Source/NiceInventoryTabAddOnPreview/PreviewState.cs"
 
 foreach ($sourceCheck in @(
     @{ Path = $bootstrapPath; Fragments = @("CompatibilityTargets.TryValidate", "PreviewTogglePatch", "PreviewPanelPatch.Prefix", "PreviewPanelPatch.Postfix", "harmony.Patch") },
     @{ Path = $compatibilityPath; Fragments = @("MatchesPrefixSignature", "MatchesAddonCheckBoxesSignature", "MakeByRefType") },
     @{ Path = $togglePatchPath; Fragments = @("DrawToggle", "PreviewState.ToggleVisibility", "NITAP_PreviewToggle") },
-    @{ Path = $previewPanelPath; Fragments = @("ref Vector2 __1", "RestorePreviouslyExpandedWidth", "previousExpandedWidth", "PanelGap = 0f", "PanelTopInset", "Widgets.DrawWindowBackground", "Widgets.DrawMenuSection", "PortraitsCache.Get", "TexUI.ArrowTexLeft", "TexUI.ArrowTexRight", "RotateCounterclockwise", "RotateClockwise") }
+    @{ Path = $previewPanelPath; Fragments = @("ref Vector2 __1", "RestorePreviouslyExpandedWidth", "previousExpandedWidth", "PanelGap = 0f", "PanelTopInset", "Widgets.DrawWindowBackground", "Widgets.DrawMenuSection", "PortraitsCache.Get", "PortraitCameraOffset = new Vector3(0f, 0f, 0.3f)", "cameraOffset: PortraitCameraOffset", "cameraZoom: PreviewState.CameraZoom", "TexButton.Minus", "TexButton.Plus", "TexUI.ArrowTexLeft", "TexUI.ArrowTexRight", "RotateCounterclockwise", "RotateClockwise") },
+    @{ Path = $previewStatePath; Fragments = @("MinCameraZoom = 0.25f", "MaxCameraZoom = 2f", "CameraZoomStep = 0.1f", "Mathf.Min", "Mathf.Max", "ZoomIn", "ZoomOut") }
 )) {
     if (-not (Test-Path -LiteralPath $sourceCheck.Path -PathType Leaf)) {
         continue
@@ -374,6 +383,24 @@ foreach ($forbiddenPresentationFragment in @(
 $previewPanelText = Read-Text "Source/NiceInventoryTabAddOnPreview/PreviewPanelPatch.cs"
 
 if ($null -ne $previewPanelText -and
+    $previewPanelText -match '(?s)DrawImageButton\(zoomOutButton,\s*TexButton\.Minus.*?PreviewState\.ZoomOut\(\)' -and
+    $previewPanelText -match '(?s)TipRegion\(\s*zoomOutButton,\s*"NITAP_ZoomOut"\.Translate\(\)') {
+    Pass "Minus button maps to zoom out and tooltip."
+}
+else {
+    Fail "Minus button does not map to zoom out and tooltip."
+}
+
+if ($null -ne $previewPanelText -and
+    $previewPanelText -match '(?s)DrawImageButton\(zoomInButton,\s*TexButton\.Plus.*?PreviewState\.ZoomIn\(\)' -and
+    $previewPanelText -match '(?s)TipRegion\(\s*zoomInButton,\s*"NITAP_ZoomIn"\.Translate\(\)') {
+    Pass "Plus button maps to zoom in and tooltip."
+}
+else {
+    Fail "Plus button does not map to zoom in and tooltip."
+}
+
+if ($null -ne $previewPanelText -and
     $previewPanelText -match '(?s)DrawRotationButton\(rotateLeftButton,\s*TexUI\.ArrowTexLeft.*?PreviewState\.RotateClockwise\(\)' -and
     $previewPanelText -match '(?s)TipRegion\(\s*rotateLeftButton,\s*"NITAP_RotateClockwise"\.Translate\(\)') {
     Pass "Left arrow maps to clockwise rotation and tooltip."
@@ -403,6 +430,8 @@ foreach ($languageFile in @(
     try {
         [xml]$languageXml = Get-Content -LiteralPath $languagePath -Raw -Encoding UTF8
         if ($null -ne $languageXml.LanguageData.NITAP_PreviewToggle -and
+            $null -ne $languageXml.LanguageData.NITAP_ZoomIn -and
+            $null -ne $languageXml.LanguageData.NITAP_ZoomOut -and
             $null -ne $languageXml.LanguageData.NITAP_RotateCounterclockwise -and
             $null -ne $languageXml.LanguageData.NITAP_RotateClockwise) {
             Pass "Preview translations are complete: $languageFile"
@@ -444,7 +473,7 @@ foreach ($fragment in @(
     "PublishedFileId.txt",
     "stage-workshop.cmd",
     "git merge --ff-only develop",
-    "v1.0.0"
+    "v$version"
 )) {
     Assert-Contains -Text $workshopPublicationText -Fragment $fragment -Description "Workshop publication procedure"
 }
@@ -492,7 +521,7 @@ if ($RequirePublicationReady) {
         Fail "Roadmap does not record the current version as validated."
     }
 
-    if ($testingCurrentText -match '(?m)^Status: validated locally after `r\d+`; milestone closed for publication\.$') {
+    if ($testingCurrentText -match '(?m)^Status: validated locally after `r\d+`; milestone closed for publication\.\r?$') {
         Pass "Current testing records a completed local validation."
     }
     else {
@@ -533,14 +562,6 @@ if ($RequirePublicationReady) {
                 Fail "Project state Workshop URL does not match About/PublishedFileId.txt."
             }
 
-            $expectedSteamUrl = "steam://url/CommunityFilePage/$publishedId"
-            $aboutSteamUrl = [string]$about.ModMetaData.steamWorkshopUrl
-            if ($aboutSteamUrl -eq $expectedSteamUrl) {
-                Pass "About metadata Workshop URL matches the published ID."
-            }
-            else {
-                Fail "About metadata Workshop URL is '$aboutSteamUrl'; expected '$expectedSteamUrl'."
-            }
         }
         else {
             Fail "Stable publication requires the real About/PublishedFileId.txt."
@@ -557,7 +578,7 @@ if ($RequirePublicationReady) {
     $obsoleteMarkers = @(
         "awaiting local validation",
         "ready for local build and validation",
-        "release candidate `r1` prepared",
+        'release candidate `r1` prepared',
         "local Workshop validation required",
         "Required local validation",
         "Current implementation awaiting validation"

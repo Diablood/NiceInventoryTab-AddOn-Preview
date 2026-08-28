@@ -1,6 +1,6 @@
 # Nice Inventory Tab Add-on: Preview
 
-RimWorld 1.6 add-on for **Nice Inventory Tab** that adds a rotatable preview of the selected pawn without modifying the original mod.
+RimWorld 1.6 add-on for **Nice Inventory Tab** that adds a rotatable and zoomable preview of the selected pawn without modifying the original mod.
 
 ![Workshop key image](docs/images/workshop-main.png)
 
@@ -11,7 +11,7 @@ RimWorld 1.6 add-on for **Nice Inventory Tab** that adds a rotatable preview of 
 Current stable version:
 
 ```text
-1.0.0 - Initial Workshop release
+1.1.0 - Add zoom controls
 ```
 
 Steam Workshop:
@@ -22,6 +22,7 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=3777164660
 
 - Preview integrated directly beside Nice Inventory Tab.
 - Follows the selected pawn or corpse.
+- Zooms in and out with vanilla controls at the top of the preview.
 - Rotates through all four orientations with left and right controls.
 - Can be shown or hidden from the Nice Inventory Tab toolbar.
 - Expands the host tab only while visible and closes with it.

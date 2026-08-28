@@ -37,12 +37,22 @@ Validated after release preparation revision `r3` and published to Workshop item
 - Integrate the validated release into `develop`, then fast-forward `main`.
 - Publish the unique annotated tag `v1.0.0`.
 
+### 1.1.0 - Add zoom controls
+
+Validated in game after local revision `r3` and prepared for publication as `v1.1.0`.
+
+- Add vanilla minus and plus controls at the top of the preview panel.
+- Support zoom levels from 25% to 200% while preserving the original 100% default.
+- Apply RimWorld's vanilla portrait camera offset so tall animals remain framed around their visible body.
+- Validate zooming and framing with a Thrumbo while preserving rotation and visibility behavior.
+- Remove unsupported top-level Workshop metadata that produced a RimWorld 1.6 startup XML error.
+- Preserve the existing Workshop item identifier for the update.
+
 ## Later evaluation
 
 These features are optional and will be considered only when a concrete need appears:
 
 - Weapon rendering when the standard portrait omits the equipped weapon.
 - Mouse drag or mouse-wheel rotation.
-- Zoom controls.
 - Persistent preview preferences.
 - Compatibility adaptations for custom races, facial animation and alternative pawn renderers.

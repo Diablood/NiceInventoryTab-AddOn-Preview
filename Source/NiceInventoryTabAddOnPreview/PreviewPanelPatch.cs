@@ -16,8 +16,12 @@ namespace NiceInventoryTabAddOnPreview
         private const float InnerMargin = 8f;
         private const float ControlsHeight = 44f;
         private const float SectionGap = 8f;
+        private const float ZoomButtonSize = 38f;
+        private const float ZoomButtonGap = 12f;
         private const float RotationButtonSize = 38f;
         private const float RotationButtonGap = 12f;
+
+        private static readonly Vector3 PortraitCameraOffset = new Vector3(0f, 0f, 0.3f);
 
         private static bool drawFailureLogged;
         private static bool renderFailureLogged;
@@ -95,7 +99,7 @@ namespace NiceInventoryTabAddOnPreview
         private static void DrawPanel(float baseWidth, float tabHeight)
         {
             float panelHeight = tabHeight - PanelTopInset - PanelBottomMargin;
-            if (panelHeight <= ControlsHeight + InnerMargin * 2f + SectionGap)
+            if (panelHeight <= ControlsHeight * 2f + InnerMargin * 2f + SectionGap * 2f)
             {
                 return;
             }
@@ -109,6 +113,12 @@ namespace NiceInventoryTabAddOnPreview
             Widgets.DrawWindowBackground(panelRect);
 
             Rect innerRect = panelRect.ContractedBy(InnerMargin);
+            Rect zoomControlsRect = new Rect(
+                innerRect.x,
+                innerRect.y,
+                innerRect.width,
+                ControlsHeight);
+
             Rect controlsRect = new Rect(
                 innerRect.x,
                 innerRect.yMax - ControlsHeight,
@@ -117,11 +127,12 @@ namespace NiceInventoryTabAddOnPreview
 
             Rect portraitRect = new Rect(
                 innerRect.x,
-                innerRect.y,
+                zoomControlsRect.yMax + SectionGap,
                 innerRect.width,
-                controlsRect.y - innerRect.y - SectionGap);
+                controlsRect.y - zoomControlsRect.yMax - SectionGap * 2f);
 
             Pawn pawn = GetSelectedPawn();
+            DrawZoomControls(zoomControlsRect);
             DrawPortrait(portraitRect, pawn);
             DrawControls(controlsRect);
         }
@@ -160,7 +171,9 @@ namespace NiceInventoryTabAddOnPreview
                 RenderTexture portrait = PortraitsCache.Get(
                     pawn,
                     new Vector2(portraitRect.width, portraitRect.height),
-                    PreviewState.Rotation);
+                    PreviewState.Rotation,
+                    cameraOffset: PortraitCameraOffset,
+                    cameraZoom: PreviewState.CameraZoom);
 
                 if (portrait != null)
                 {
@@ -179,6 +192,43 @@ namespace NiceInventoryTabAddOnPreview
                 Widgets.Label(portraitRect, "NITAP_RenderUnavailable".Translate().ToString());
                 Text.Anchor = TextAnchor.UpperLeft;
             }
+        }
+
+        private static void DrawZoomControls(Rect rect)
+        {
+            float totalWidth = ZoomButtonSize * 2f + ZoomButtonGap;
+            float firstButtonX = rect.x + (rect.width - totalWidth) / 2f;
+            float buttonY = rect.y + (rect.height - ZoomButtonSize) / 2f;
+
+            Rect zoomOutButton = new Rect(
+                firstButtonX,
+                buttonY,
+                ZoomButtonSize,
+                ZoomButtonSize);
+
+            Rect zoomInButton = new Rect(
+                zoomOutButton.xMax + ZoomButtonGap,
+                buttonY,
+                ZoomButtonSize,
+                ZoomButtonSize);
+
+            if (DrawImageButton(zoomOutButton, TexButton.Minus, "-"))
+            {
+                PreviewState.ZoomOut();
+            }
+
+            if (DrawImageButton(zoomInButton, TexButton.Plus, "+"))
+            {
+                PreviewState.ZoomIn();
+            }
+
+            TooltipHandler.TipRegion(
+                zoomOutButton,
+                "NITAP_ZoomOut".Translate());
+
+            TooltipHandler.TipRegion(
+                zoomInButton,
+                "NITAP_ZoomIn".Translate());
         }
 
         private static void DrawControls(Rect rect)
@@ -218,7 +268,7 @@ namespace NiceInventoryTabAddOnPreview
                 "NITAP_RotateCounterclockwise".Translate());
         }
 
-        private static bool DrawRotationButton(Rect rect, Texture2D texture, string fallbackLabel)
+        private static bool DrawImageButton(Rect rect, Texture2D texture, string fallbackLabel)
         {
             if (texture != null)
             {
@@ -226,6 +276,11 @@ namespace NiceInventoryTabAddOnPreview
             }
 
             return Widgets.ButtonText(rect, fallbackLabel);
+        }
+
+        private static bool DrawRotationButton(Rect rect, Texture2D texture, string fallbackLabel)
+        {
+            return DrawImageButton(rect, texture, fallbackLabel);
         }
     }
 }

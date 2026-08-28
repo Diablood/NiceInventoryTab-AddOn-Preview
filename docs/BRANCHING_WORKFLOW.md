@@ -80,3 +80,7 @@ git push origin v1.0.0
 ## Stable hotfixes
 
 After `1.0.0`, a stable correction starts from `main` on `hotfix/*`. Integrate the validated correction into `main`, tag the patch release, then fast-forward or replay the same correction into `develop` so future development retains it.
+
+## Subsequent stable feature releases
+
+A stable feature update starts on `feature/*` from the latest stable line. After validation, fast-forward the feature into `develop`, then fast-forward `main` from `develop`. Create the stable tag only after both branches point to the same release commit.

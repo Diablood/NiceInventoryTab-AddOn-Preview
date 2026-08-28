@@ -5,11 +5,13 @@ Copy the block below into the Steam Workshop description editor.
 ```bbcode
 [h1]Nice Inventory Tab Add-on: Preview[/h1]
 
-Adds a rotatable preview of the selected pawn directly beside [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3609897594]Nice Inventory Tab[/url].
+Adds a rotatable and zoomable preview of the selected pawn directly beside [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3609897594]Nice Inventory Tab[/url].
 
 [h2]Features[/h2]
 [list]
 [*]Integrated preview of the selected pawn or corpse.
+[*]Vanilla minus and plus controls to zoom from 25% to 200%.
+[*]Improved framing for Thrumbos and very large modded pawns.
 [*]Four portrait orientations controlled by left and right arrows.
 [*]Toolbar toggle to show or hide the preview.
 [*]The inventory tab expands only while the preview is visible.
@@ -47,11 +49,13 @@ Nice Inventory Tab is created by Andromeda. This project is an independent add-o
 
 [h1]Français[/h1]
 
-Ajoute un aperçu orientable du colon sélectionné directement à droite de [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3609897594]Nice Inventory Tab[/url].
+Ajoute un aperçu orientable avec zoom du colon sélectionné directement à droite de [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3609897594]Nice Inventory Tab[/url].
 
 [h2]Fonctionnalités[/h2]
 [list]
 [*]Aperçu intégré du colon ou du cadavre sélectionné.
+[*]Boutons vanilla moins et plus pour zoomer de 25 % à 200 %.
+[*]Cadrage amélioré pour les Thrumbos et les très grands pawns ajoutés par des mods.
 [*]Quatre orientations contrôlées par des flèches gauche et droite.
 [*]Bouton dans la barre de Nice Inventory Tab pour afficher ou masquer l'aperçu.
 [*]L'onglet s'élargit uniquement lorsque l'aperçu est visible.
@@ -94,4 +98,4 @@ Nice Inventory Tab est créé par Andromeda. Ce projet est un add-on indépendan
   - Harmony — `2009463077`
   - Nice Inventory Tab — `3609897594`
 - Suggested visibility for the first verification: private or friends-only.
-- Suggested first change note: `Initial release for RimWorld 1.6.`
+- Suggested update change note: `Add zoom controls and improved framing for very large pawns.`

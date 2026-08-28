@@ -3,7 +3,7 @@
     <name>Nice Inventory Tab Add-on: Preview</name>
     <author>Diablood</author>
     <packageId>diablood.niceinventorytab.addon.preview</packageId>
-    <modVersion>1.0.0</modVersion>
+    <modVersion>1.1.0</modVersion>
     <supportedVersions>
         <li>1.6</li>
     </supportedVersions>
@@ -24,10 +24,9 @@
         <li>Andromeda.NiceInventoryTab</li>
     </loadAfter>
     <url>https://github.com/Diablood/NiceInventoryTab-AddOn-Preview</url>
-    <steamWorkshopUrl>steam://url/CommunityFilePage/3777164660</steamWorkshopUrl>
-    <description>Adds a rotatable pawn preview directly beside Nice Inventory Tab without modifying the original mod.
+    <description>Adds a rotatable and zoomable pawn preview directly beside Nice Inventory Tab without modifying the original mod.
 
-Use the toolbar toggle to show or hide the preview. The panel follows the selected pawn or corpse, rotates through all four orientations, expands the inventory tab only while visible and closes automatically with it.
+Use the toolbar toggle to show or hide the preview. The panel follows the selected pawn or corpse, zooms in and out, rotates through all four orientations, expands the inventory tab only while visible and closes automatically with it.
 
 Requires Harmony and Nice Inventory Tab.</description>
 </ModMetaData>

@@ -2,11 +2,11 @@
 
 ## Latest validated milestone
 
-- Version: `1.0.0`
-- Name: Initial Workshop release
-- Branch: `feature/initial-workshop-release`
-- Base: `v0.1.1-dev`
-- Tag: `v1.0.0`
+- Version: `1.1.0`
+- Name: Add zoom controls
+- Branch: `feature/zoom-controls`
+- Base: `main` at `19f3572`
+- Tag: `v1.1.0`
 - Status: validated and closed
 - Latest local validation revision: `r3`
 - Workshop ID: `3777164660`
@@ -14,24 +14,23 @@
 
 ## Validated release scope
 
-- Promote the accepted integrated preview to the first stable release for RimWorld 1.6.
-- Keep the runtime feature code unchanged from the validated `0.1.1-dev-r8` layout.
-- Add the polished primary Workshop image and the secondary in-game screenshot.
-- Add stable English/French Workshop metadata and publication documentation.
-- Build clean installable packages without source, documentation or debug files.
-- Stage a clean local Workshop copy while preserving the real Steam item identifier.
-- Record `About/PublishedFileId.txt` with the permanent item ID `3777164660`.
-- Link the stable metadata and documentation to the existing Workshop item.
+- Add zoom-in and zoom-out controls using RimWorld's vanilla plus and minus icons.
+- Keep the default portrait scale unchanged while allowing a 25% to 200% zoom range.
+- Place zoom controls at the top of the preview and retain rotation controls at the bottom.
+- Lower the rendered pawn with RimWorld's vanilla portrait camera offset.
+- Preserve selection, corpse preview, rotation, visibility and tab-width behavior.
+- Remove the unsupported root Workshop URL from `About/About.xml` while preserving `About/PublishedFileId.txt`.
+- Update the English/French tooltips, Workshop description and player-facing documentation.
 
 ## Validation result
 
-- Project consistency checks passed for version `1.0.0`.
+- Project consistency and publication-readiness checks passed for version `1.1.0`.
 - The validated primary image is `1280 × 720` and remains below 1 MB.
-- Release metadata and assembly versions match `1.0.0` / `1.0.0.0`.
-- The functional preview behavior remains the accepted `0.1.1-dev-r8` implementation.
-- The first Steam Workshop upload completed and created item `3777164660`.
-- Steam's generated `About/PublishedFileId.txt` was imported into the repository.
-- The Workshop URL and identifier agree.
+- Release metadata and assembly versions match `1.1.0` / `1.1.0.0`.
+- The zoom range, button mapping and portrait camera offset are covered by the repository consistency checks.
+- In-game testing with a Thrumbo confirmed zooming, full-body framing and the lowered visual center.
+- Startup testing confirmed the invalid metadata error is removed and the compatibility bootstrap initializes.
+- The clean update package preserves Workshop item ID `3777164660`.
 
 ## Workshop assets
 
@@ -47,11 +46,11 @@ docs/images/workshop-preview.png
 
 Secondary in-game screenshot showing the actual integrated preview.
 
-## Deferred beyond 1.0.0
+## Deferred beyond 1.1.0
 
 - Weapon rendering when RimWorld's standard portrait omits the equipped weapon.
-- Mouse drag, mouse-wheel rotation or zoom.
-- Persistent preview visibility or orientation settings.
+- Mouse drag or mouse-wheel rotation.
+- Persistent preview visibility, orientation or zoom settings.
 - Dedicated compatibility adaptations for alternative portrait renderers.
 
 ## Maintenance baseline
