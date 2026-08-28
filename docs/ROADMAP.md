@@ -47,6 +47,7 @@ Validated in game after local revision `r3` and prepared for publication as `v1.
 - Validate zooming and framing with a Thrumbo while preserving rotation and visibility behavior.
 - Remove unsupported top-level Workshop metadata that produced a RimWorld 1.6 startup XML error.
 - Refresh the primary Workshop image while preserving its existing composition.
+- Replace the secondary image with the final in-game screenshot showing the zoom controls.
 - Preserve the existing Workshop item identifier for the update.
 
 ## Later evaluation

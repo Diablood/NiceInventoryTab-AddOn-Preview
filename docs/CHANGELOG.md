@@ -7,6 +7,7 @@
 - Apply RimWorld's vanilla portrait camera offset so pawns sit lower in the frame and tall heads remain visible longer while zooming.
 - Remove the unsupported top-level Workshop URL metadata that caused an XML startup error in RimWorld 1.6.
 - Refresh the primary Workshop image with the new vanilla zoom controls.
+- Replace the secondary Workshop screenshot with the final validated in-game zoom layout.
 
 ## 1.0.0
 
