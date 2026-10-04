@@ -35,7 +35,7 @@ namespace NiceInventoryTabAddOnPreview
             RestorePreviouslyExpandedWidth(__0, ref __1);
         }
 
-        internal static void Postfix(ITab_Pawn_Gear __0, ref Vector2 __1)
+        internal static void Postfix(ITab_Pawn_Gear __0, ref Vector2 __1, bool __result)
         {
             if (__0 == null)
             {
@@ -44,6 +44,15 @@ namespace NiceInventoryTabAddOnPreview
 
             try
             {
+                // Nice Inventory Tab's Harmony prefix returns true when it wants
+                // RimWorld's vanilla ITab_Pawn_Gear.FillTab to run. In that mode
+                // the add-on must not reserve width or draw its custom preview.
+                if (__result)
+                {
+                    ClearTrackedExtension();
+                    return;
+                }
+
                 if (!PreviewState.IsVisible)
                 {
                     ClearTrackedExtension();

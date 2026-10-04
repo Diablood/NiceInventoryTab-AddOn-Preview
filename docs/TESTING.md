@@ -43,15 +43,19 @@
 - The empty `AddonCheckBoxes` extension hook is patched for the preview toggle.
 - Nice Inventory Tab's `Prefix` is patched before and after its drawing routine.
 - The validated `ref Vector2` argument is restored before drawing and expanded after drawing only while the preview is visible.
-- Repeated draw frames never accumulate additional width.
+- The Nice Inventory Tab prefix return value is treated as the authoritative view-mode signal: `true` means vanilla `ITab_Pawn_Gear.FillTab` will run and the add-on must not draw or reserve width.
+- Switching to vanilla view never changes the player's own preview visibility choice, rotation or zoom state.
+- Returning to Nice Inventory view restores preview behavior according to the player's existing preview visibility choice.
+- Repeated draw frames and repeated Nice/vanilla switching never accumulate additional width.
 - A signature mismatch produces one explicit error and leaves the add-on inactive.
 - No direct assembly reference to Nice Inventory Tab is required.
 
 ## Preview behavior
 
-- Preview is drawn only while Nice Inventory Tab is drawing its gear tab.
+- Preview is drawn only while Nice Inventory Tab is drawing its custom gear view.
+- Preview is absent while the host mod allows RimWorld's vanilla gear view to draw.
 - Closing the inventory tab removes the preview without a separate close operation.
-- The toolbar toggle changes portrait visibility and tab width together.
+- The toolbar toggle changes portrait visibility and tab width together in Nice Inventory view.
 - Preview follows the currently selected pawn or corpse.
 - Vanilla minus and plus controls are shown at the top of the preview.
 - Zoom starts at 100%, is bounded between 25% and 200%, and changes in 10% steps.
@@ -68,9 +72,11 @@
 ## UI regression
 
 - Existing Nice Inventory Tab buttons retain their behavior.
+- Nice Inventory Tab's own custom/vanilla-view toggle retains control over which gear interface is displayed.
 - The add-on button uses the extension slot supplied by `AddonCheckBoxes`.
 - The visible preview receives dedicated width rather than covering inventory contents.
 - Hiding the preview restores the unmodified tab width.
+- Switching to vanilla view also restores the unmodified tab width without changing the add-on's saved visibility state.
 - The Equipment-to-preview spacing matches the host tab's existing inter-column spacing.
 - The preview border never overlaps the Equipment block or the close control.
 - GUI font and anchor state are restored after custom drawing.
@@ -82,5 +88,5 @@
 - `docs/images/workshop-preview.png` exists and reflects the validated layout.
 - `About/Preview.png` exists as the Workshop thumbnail.
 - `docs/WORKSHOP_DESCRIPTION.md` contains the bilingual copy-paste description.
-- `docs/WORKSHOP_PUBLICATION.md` documents first upload, identifier import and stable publication.
+- `docs/WORKSHOP_PUBLICATION.md` documents update staging and stable publication.
 - Documentation images remain outside the generated player-facing ZIP.

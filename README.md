@@ -11,7 +11,7 @@ RimWorld 1.6 add-on for **Nice Inventory Tab** that adds a rotatable and zoomabl
 Current stable version:
 
 ```text
-1.1.0 - Add zoom controls
+1.1.1 - Hide preview in vanilla inventory view
 ```
 
 Steam Workshop:
@@ -25,7 +25,7 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=3777164660
 - Zooms in and out with vanilla controls at the top of the preview.
 - Rotates through all four orientations with left and right controls.
 - Can be shown or hidden from the Nice Inventory Tab toolbar.
-- Expands the host tab only while visible and closes with it.
+- Expands the host tab only while visible and closes with it. Switching to vanilla view hides the preview while preserving visibility, zoom and rotation preferences.
 - Uses runtime compatibility checks and never modifies Nice Inventory Tab's assembly.
 
 ## Requirements

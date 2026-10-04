@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.1
+
+- Hide the integrated preview whenever Nice Inventory Tab switches to RimWorld's vanilla gear view.
+- Release the preview's reserved width while the vanilla view is active.
+- Preserve the user's preview visibility choice, rotation and zoom when switching back to Nice Inventory Tab.
+- Use the already validated Nice Inventory Tab Harmony-prefix return value instead of depending on a private host-mod field.
+
 ## 1.1.0
 
 - Add vanilla zoom-in and zoom-out controls at the top of the preview panel.
@@ -48,4 +55,5 @@
 - Add the `net472` build project and build command.
 - Add a clean RimWorld package generator with a runtime allowlist and ZIP layout validation.
 - Add a Harmony compatibility bootstrap using runtime type discovery.
+- Add initial rotation state support.
 - Add project workflow, roadmap, testing and publication documentation.
