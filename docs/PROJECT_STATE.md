@@ -2,79 +2,35 @@
 
 ## Current milestone
 
-- Version: `1.2.0`
-- Name: Add headgear preview toggle
-- Branch: `feature/headgear-preview-toggle`
-- Base: `v1.1.1` (`476927f`), verified on remote `main` and `develop`.
+- Version: `1.3.0`
+- Name: Add apparel preview toggle
+- Branch: `feature/apparel-preview-toggle`
+- Base: `v1.2.0` (`d909f7c`), verified on remote main and develop.
 - Status: validated and closed
-- Validated local revision: `r1`
-- Tag: `v1.2.0`
-- Runtime metadata: `1.2.0` / `1.2.0.0`.
-
-### Implementation scope
-
-- Add one preview-only show/hide helmets and hats button, initially showing headgear.
-- Verified the installed RimWorld 1.6 PortraitsCache.Get signature and cache parameters: renderHeadgear is supported and included in portrait cache selection. The implementation passes ShowHeadgear directly to this call.
-- Keep state with the existing preview state and preserve it across rotation, zoom, pawn selection and temporary vanilla view switches for the current session.
-- Use the Core Apparel_SimpleHelmet uiIcon, highlight the enabled state and provide English/French action tooltips with a localized text fallback.
-- Never modify actual worn apparel, equipment, map rendering or Nice Inventory Tab itself.
-- Keep the clothing toggle entirely in milestone `1.3.0`.
-- Maintainer confirmed in-game tests OK on 2026-10-04 for local revision r1; automated release checks are recorded in TESTING_CURRENT.md.
-
-## Last closed milestone
-
-- Version: `1.1.1`
-- Name: Hide preview in vanilla inventory view
-- Branch: `fix/vanilla-view-preview-visibility`
-- Base: `v1.1.0`
-- Tag: `v1.1.1`
-- Status: validated and closed
-- Validated local revision: `r1`
+- Validated local revision: `r3`
+- Tag: `v1.3.0`
+- Runtime metadata: `1.3.0` / `1.3.0.0`.
 - Workshop ID: `3777164660`
 - Workshop URL: https://steamcommunity.com/sharedfiles/filedetails/?id=3777164660
 
-## Scope of this corrective milestone
+## Implementation
 
-- Detect when Nice Inventory Tab's Harmony prefix allows RimWorld's vanilla `ITab_Pawn_Gear.FillTab` to run.
-- Suppress the integrated preview while the vanilla gear view is active.
-- Release the preview's reserved width before the vanilla view is drawn.
-- Preserve the player's preview visibility choice while switching between Nice Inventory Tab and vanilla view.
-- Preserve the current preview rotation and zoom while the host mod is temporarily in vanilla mode.
-- Leave Nice Inventory Tab's own toggle behavior and assembly untouched.
+- Linked controls: hiding clothing hides headgear too; showing headgear while clothing is hidden restores the whole outfit. Showing clothing restores the remembered headgear preference. Highlights and action tooltips reflect these transitions.
+- Both default to visible and retain their choices during the session, including zoom, rotation, pawn selection, tab reopen and vanilla view switching.
+- Use the installed RimWorld 1.6 PortraitsCache.Get renderClothes parameter and the Core Apparel_BasicShirt icon.
+- Four 38-pixel controls and three 12-pixel gaps occupy 188 pixels of the existing 222-pixel toolbar; panel size is unchanged.
+- Highlight enabled controls and translate action tooltips in English and French.
+- Do not change actual worn apparel, map rendering, save data or Nice Inventory Tab itself.
 
-## Implementation approach
+## Last closed milestone
 
-Nice Inventory Tab already exposes the required state through the return value of its validated `Prefix(ITab_Pawn_Gear, ref Vector2)` method. As a Harmony prefix, a `true` result means RimWorld's original `FillTab` is allowed to continue. The add-on therefore reads the patched method's `__result` in its postfix and draws the preview only when the result is `false`.
+- Version: `1.2.0`
+- Tag: `v1.2.0`
+- Status: validated and closed
+- Commit: `d909f7c`
+- Headgear toggle validated in game by the maintainer; main, develop and the annotated tag were verified on GitHub.
+- Git publication does not assert a Steam upload.
 
-This avoids reflection against a private Nice Inventory Tab field and keeps the compatibility surface limited to the method signature already validated by the add-on.
+## Validation
 
-## Validation coverage
-
-In-game acceptance reported by the maintainer on 2026-10-04. Release build and clean package generation passed on the same date; detailed evidence is recorded in TESTING_CURRENT.md. Workshop upload of this patch is not asserted by Git publication.
-
-- Project consistency check for `1.1.1`.
-- Release build.
-- Clean package generation.
-- Open Nice Inventory Tab with the preview visible.
-- Switch to Nice Inventory Tab's vanilla view and confirm the preview and its extra width disappear.
-- Switch back to Nice Inventory Tab and confirm the preview returns when it was previously enabled.
-- Repeat the test after manually hiding the preview and confirm it remains hidden when returning from vanilla view.
-- Confirm rotation and zoom state survive the temporary vanilla-view switch.
-- Repeat the view switch several times and confirm no width accumulation or overlap occurs.
-- Confirm no new red error appears in `Player.log`.
-
-## Milestone sequence
-
-Closed milestones:
-
-```text
-1.2.0 - Add headgear preview toggle
-```
-
-Then, only after `1.2.0` is closed:
-
-```text
-1.3.0 - Add apparel preview toggle
-```
-
-The three changes remain separate milestones and separate final tags.
+See TESTING_CURRENT.md for automated evidence and the linked-control transition tests. Maintainer confirmed r3 tests OK on 2026-10-04, including restoration of the remembered headgear preference.

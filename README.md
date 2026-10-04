@@ -11,7 +11,7 @@ RimWorld 1.6 add-on for **Nice Inventory Tab** that adds a rotatable and zoomabl
 Current stable version:
 
 ```text
-1.2.0 - Add headgear preview toggle
+1.3.0 - Add apparel preview toggle
 ```
 
 Steam Workshop:
@@ -25,6 +25,7 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=3777164660
 - Zooms in and out with vanilla controls at the top of the preview.
 - Rotates through all four orientations with left and right controls.
 - Shows or hides helmets and hats only in the preview; the highlighted helmet button means headgear is visible.
+- Hides or restores the outfit with a shirt button, remembering the headgear preference. Clicking helmet while the outfit is hidden restores everything.
 - Can be shown or hidden from the Nice Inventory Tab toolbar.
 - Expands the host tab only while visible and closes with it. Switching to vanilla view hides the preview while preserving visibility, zoom and rotation preferences.
 - Uses runtime compatibility checks and never modifies Nice Inventory Tab's assembly.

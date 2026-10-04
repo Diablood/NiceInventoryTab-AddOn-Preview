@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.3.0
+
+- Add a preview-only clothing/armor button beside the helmet button, using the Core shirt icon and English/French action tooltips.
+- Link clothing and headgear visibility: hiding clothing hides both; showing headgear restores the whole outfit; showing clothing restores the remembered headgear preference. Both start enabled and retain their choices for the session.
+- Pass renderClothes to the standard portrait renderer without modifying actual worn apparel or Nice Inventory Tab.
+
 ## 1.2.0
 
 - Add a preview-only helmets/hats toggle beside the zoom controls, with a Core helmet icon and English/French action tooltips.

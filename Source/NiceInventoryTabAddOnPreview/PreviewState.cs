@@ -11,16 +11,30 @@ namespace NiceInventoryTabAddOnPreview
 
         private static bool isVisible = true;
         private static bool showHeadgear = true;
+        private static bool showApparel = true;
         private static Rot4 rotation = Rot4.South;
         private static float cameraZoom = 1f;
 
         internal static bool IsVisible => isVisible;
 
-        internal static bool ShowHeadgear => showHeadgear;
+        // Keep the preference while the outfit temporarily hides headgear.
+        internal static bool ShowHeadgear => showApparel && showHeadgear;
+
+        internal static bool ShowApparel => showApparel;
+
+        internal static void ToggleApparel()
+        {
+            showApparel = !showApparel;
+        }
 
         internal static void ToggleHeadgear()
         {
-            showHeadgear = !showHeadgear;
+            showHeadgear = !ShowHeadgear;
+            if (showHeadgear)
+            {
+                // Vanilla headgear rendering also requires clothing rendering.
+                showApparel = true;
+            }
         }
 
         internal static Rot4 Rotation => rotation;

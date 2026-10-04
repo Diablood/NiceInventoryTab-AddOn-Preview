@@ -1,5 +1,46 @@
 # Current testing
 
+## 1.3.0
+
+Status: validated locally after `r3`; milestone closed for publication.
+
+Maintainer confirmed r3 tests OK on 2026-10-04. In-game acceptance is user-reported; the agent did not independently rerun the game or inspect Player.log. Historical r1/r2 evidence below records superseded behavior. No Steam upload is claimed. Final publication-ready check, Release rebuild and package build passed with zero warnings/errors. The final ZIP contains eight runtime files (930763 bytes) and Workshop ID 3777164660.
+
+- r3 consistency and Release build passed without warnings/errors. Compiled-state tests passed repeated outfit off/on with both headgear preferences and helmet restore-all from either preference.
+- r3 package installed locally; eight files match the archive by SHA-256. Workshop ID preserved. Prior copy backed up as local-backup-1.3.0-r2-20261004-234354.zip.
+
+### r3 change
+
+Remember the headgear preference while clothing is hidden. Test clothing off/on with headgear initially visible and initially hidden; restore the original choice in both cases. Clicking helmet while the entire outfit is hidden explicitly enables both, regardless of the remembered preference. Earlier evidence below describes previous revisions.
+
+### r2 evidence
+
+- Consistency check and Release build passed with zero warnings/errors.
+- Executed the compiled PreviewState transitions: defaults, hide outfit, restore via helmet, hide helmet, hide/show clothes without helmet, restore helmet. All expected states passed.
+- Package 1.3.0-r2 generated and staged; all eight installed files match the archive by SHA-256. Workshop ID 3777164660 preserved.
+- Previous installed copy backed up as local-backup-1.3.0-r1-20261004-233343.zip.
+
+
+The maintainer accepted r1 overall but reported that hiding clothing also hid headgear and the helmet button then had no visible effect. Inspection confirmed PawnRenderNodeWorker_Apparel_Head requires both Clothes and Headgear flags. The maintainer selected linked controls on 2026-10-04: showing headgear after hiding clothing restores the entire outfit. The r1 evidence below predates this correction.
+
+### Automated evidence (2026-10-04)
+
+- Installed RimWorld 1.6 API confirms separate renderClothes and renderHeadgear arguments; PortraitParams forwards both separately to PawnCacheRenderer.
+- Consistency check, Release build and package build passed with zero warnings/errors.
+- Archive: dist/NiceInventoryTab-AddOn-Preview-1.3.0-r1.zip (930696 bytes, eight runtime files).
+- Installed into D:\SteamLibrary\steamapps\common\RimWorld\Mods\NiceInventoryTab-AddOn-Preview; all eight files match the archive by SHA-256.
+- Previous installed copy backed up in dist/local-backup-1.2.0-20261004-231341.zip.
+- Workshop ID 3777164660 preserved. No final commit, merge, tag or Steam upload; in-game results remain pending.
+
+### Required in-game acceptance
+
+1. Hide clothing: both controls deactivate and the entire outfit disappears. Click helmet: both activate and the entire outfit returns. Hide clothing again, then click shirt: both return. Hide only headgear, then hide/show clothing: headgear stays hidden. Repeat several times and verify highlights match the rendered state.
+2. Confirm actual equipment and map appearance stay unchanged; highlights and French/English tooltips describe the state and next action.
+3. Rotate, zoom, switch pawn/corpse, close/reopen the tab and switch to vanilla view/back; both choices should survive during the session.
+4. Check a pawn without clothing and an animal, tooltips and toolbar spacing, and absence of new rendering errors.
+
+Preferences reset to visible on a new session. No save migration or persistent apparel changes are introduced. Custom portrait renderer compatibility remains unverified.
+
 ## 1.2.0
 
 Status: validated locally after `r1`; milestone closed for publication.
@@ -12,7 +53,7 @@ Status: validated locally after `r1`; milestone closed for publication.
 - Staged into D:\SteamLibrary\steamapps\common\RimWorld\Mods\NiceInventoryTab-AddOn-Preview; all eight files match the archive by SHA-256.
 - Previous local copy backed up in dist/local-backup-1.1.1-20261004-225930.zip.
 - Workshop ID 3777164660 is preserved in the repository, package and installed copy.
-- Maintainer confirmed the in-game tests OK on 2026-10-04. Acceptance is user-reported; the agent did not independently run the game or inspect Player.log. No Steam upload is claimed.
+- Maintainer confirmed the in-game tests OK on 2026-10-04. Acceptance is user-reported; the agent did not independently run the game or inspect Player.log. No Steam upload is claimed. Final publication-ready check, Release rebuild and package build passed with zero warnings/errors. The final ZIP contains eight runtime files (930763 bytes) and Workshop ID 3777164660.
 
 ### In-game acceptance coverage
 
@@ -74,9 +115,3 @@ Status: validated locally after `r1`; milestone closed for publication.
 - The standard portrait renderer may omit the equipped weapon.
 - Preview visibility, orientation and zoom are not persisted beyond the current session.
 - Alternative portrait renderers have not received dedicated compatibility adaptations.
-
-## Next milestone
-
-```text
-1.3.0 - Add apparel preview toggle
-```

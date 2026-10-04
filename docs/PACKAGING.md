@@ -26,10 +26,10 @@ To package an already built assembly without rebuilding:
 
 ## Output
 
-For stable version `1.2.0`, the generated archive is:
+For stable version `1.3.0`, the generated archive is:
 
 ```text
-dist/NiceInventoryTab-AddOn-Preview-1.2.0.zip
+dist/NiceInventoryTab-AddOn-Preview-1.3.0.zip
 ```
 
 Its installable layout is:

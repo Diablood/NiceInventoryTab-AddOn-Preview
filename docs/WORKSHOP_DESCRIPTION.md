@@ -15,6 +15,7 @@ Adds a rotatable and zoomable preview of the selected pawn directly beside [url=
 [*]Four portrait orientations controlled by left and right arrows.
 [*]Toolbar toggle to show or hide the preview.
 [*]Helmet button to show or hide headgear in the preview without changing worn items.
+[*]Shirt button to hide or restore the outfit while remembering your headgear preference. Clicking helmet while the outfit is hidden restores everything.
 [*]The inventory tab expands only while the preview is visible.
 [*]The preview closes automatically with Nice Inventory Tab.
 [*]Runtime compatibility checks; the original mod is never modified.
@@ -60,6 +61,7 @@ Ajoute un aperçu orientable avec zoom du colon sélectionné directement à dro
 [*]Quatre orientations contrôlées par des flèches gauche et droite.
 [*]Bouton dans la barre de Nice Inventory Tab pour afficher ou masquer l'aperçu.
 [*]Bouton casque pour afficher ou masquer les couvre-chefs dans l'aperçu sans modifier les objets portés.
+[*]Bouton tenue qui mémorise votre choix pour le casque. Cliquer sur le casque quand toute la tenue est masquée réaffiche tout.
 [*]L'onglet s'élargit uniquement lorsque l'aperçu est visible.
 [*]L'aperçu se ferme automatiquement avec l'onglet.
 [*]Contrôles de compatibilité au démarrage, sans modification du mod original.
@@ -100,4 +102,4 @@ Nice Inventory Tab est créé par Andromeda. Ce projet est un add-on indépendan
   - Harmony — `2009463077`
   - Nice Inventory Tab — `3609897594`
 - Suggested visibility for the first verification: private or friends-only.
-- Suggested update change note: `Add a preview-only button to show or hide helmets and hats.`
+- Suggested update change note: `Add an outfit preview toggle that remembers the headgear visibility preference.`

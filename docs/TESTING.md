@@ -78,6 +78,13 @@
 - Pawns without headgear and animals render safely.
 - Switching headgear visibility refreshes the portrait through separate cache parameters.
 
+## Apparel preview regression (1.3.0)
+
+- Test linked transitions: hide clothing disables both; show headgear restores both; show clothing restores the previous headgear preference (test both visible and hidden); hiding headgear leaves clothing visible.
+- Defaults are visible; both choices survive rotation, zoom, selection, tab reopen and vanilla-view switches for the session.
+- The portrait changes immediately without modifying worn items, pawn map appearance or save data.
+- Animals and pawns without clothing remain safe; shirt icon and translated tooltips fit the toolbar.
+
 ## UI regression
 
 - Existing Nice Inventory Tab buttons retain their behavior.

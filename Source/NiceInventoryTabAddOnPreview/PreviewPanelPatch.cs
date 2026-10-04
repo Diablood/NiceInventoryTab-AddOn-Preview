@@ -24,6 +24,7 @@ namespace NiceInventoryTabAddOnPreview
         private static readonly Vector3 PortraitCameraOffset = new Vector3(0f, 0f, 0.3f);
 
         private static Texture2D headgearIcon;
+        private static Texture2D apparelIcon;
 
         private static bool drawFailureLogged;
         private static bool renderFailureLogged;
@@ -185,7 +186,8 @@ namespace NiceInventoryTabAddOnPreview
                     PreviewState.Rotation,
                     cameraOffset: PortraitCameraOffset,
                     cameraZoom: PreviewState.CameraZoom,
-                    renderHeadgear: PreviewState.ShowHeadgear);
+                    renderHeadgear: PreviewState.ShowHeadgear,
+                    renderClothes: PreviewState.ShowApparel);
 
                 if (portrait != null)
                 {
@@ -208,7 +210,7 @@ namespace NiceInventoryTabAddOnPreview
 
         private static void DrawZoomControls(Rect rect)
         {
-            float totalWidth = ZoomButtonSize * 3f + ZoomButtonGap * 2f;
+            float totalWidth = ZoomButtonSize * 4f + ZoomButtonGap * 3f;
             float firstButtonX = rect.x + (rect.width - totalWidth) / 2f;
             float buttonY = rect.y + (rect.height - ZoomButtonSize) / 2f;
 
@@ -230,6 +232,12 @@ namespace NiceInventoryTabAddOnPreview
                 ZoomButtonSize,
                 ZoomButtonSize);
 
+            Rect apparelButton = new Rect(
+                headgearButton.xMax + ZoomButtonGap,
+                buttonY,
+                ZoomButtonSize,
+                ZoomButtonSize);
+
             if (DrawImageButton(zoomOutButton, TexButton.Minus, "-"))
             {
                 PreviewState.ZoomOut();
@@ -241,6 +249,7 @@ namespace NiceInventoryTabAddOnPreview
             }
 
             DrawHeadgearControl(headgearButton);
+            DrawApparelControl(apparelButton);
 
             TooltipHandler.TipRegion(
                 zoomOutButton,
@@ -270,7 +279,29 @@ namespace NiceInventoryTabAddOnPreview
             }
 
             TooltipHandler.TipRegion(rect,
-                (PreviewState.ShowHeadgear ? "NITAP_HideHeadgear" : "NITAP_ShowHeadgear").Translate());
+                (PreviewState.ShowHeadgear ? "NITAP_HideHeadgear" : PreviewState.ShowApparel ? "NITAP_ShowHeadgear" : "NITAP_ShowAllApparel").Translate());
+        }
+
+        private static void DrawApparelControl(Rect rect)
+        {
+            // Resolve the Core shirt icon only once Defs are available.
+            if (apparelIcon == null)
+            {
+                apparelIcon = DefDatabase<ThingDef>.GetNamedSilentFail("Apparel_BasicShirt")?.uiIcon;
+            }
+
+            if (PreviewState.ShowApparel)
+            {
+                Widgets.DrawHighlight(rect);
+            }
+
+            if (DrawImageButton(rect, apparelIcon, "NITAP_ApparelLabel".Translate().ToString()))
+            {
+                PreviewState.ToggleApparel();
+            }
+
+            TooltipHandler.TipRegion(rect,
+                (PreviewState.ShowApparel ? "NITAP_HideApparel" : "NITAP_ShowApparel").Translate());
         }
 
         private static void DrawControls(Rect rect)

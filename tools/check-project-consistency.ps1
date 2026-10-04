@@ -390,7 +390,7 @@ foreach ($forbiddenPresentationFragment in @(
 }
 
 $previewPanelText = Read-Text "Source/NiceInventoryTabAddOnPreview/PreviewPanelPatch.cs"
-foreach ($fragment in @('renderHeadgear: PreviewState.ShowHeadgear', 'PreviewState.ToggleHeadgear()', 'NITAP_HideHeadgear', 'NITAP_ShowHeadgear')) {
+foreach ($fragment in @('renderClothes: PreviewState.ShowApparel', 'PreviewState.ToggleApparel()', 'NITAP_HideApparel', 'NITAP_ShowApparel', 'renderHeadgear: PreviewState.ShowHeadgear', 'PreviewState.ToggleHeadgear()', 'NITAP_HideHeadgear', 'NITAP_ShowHeadgear')) {
     Assert-Contains -Text $previewPanelText -Fragment $fragment -Description "Headgear preview control"
 }
 
@@ -442,6 +442,10 @@ foreach ($languageFile in @(
     try {
         [xml]$languageXml = Get-Content -LiteralPath $languagePath -Raw -Encoding UTF8
         if ($null -ne $languageXml.LanguageData.NITAP_PreviewToggle -and
+            $null -ne $languageXml.LanguageData.NITAP_ShowAllApparel -and
+            $null -ne $languageXml.LanguageData.NITAP_ApparelLabel -and
+            $null -ne $languageXml.LanguageData.NITAP_HideApparel -and
+            $null -ne $languageXml.LanguageData.NITAP_ShowApparel -and
             $null -ne $languageXml.LanguageData.NITAP_HeadgearLabel -and
             $null -ne $languageXml.LanguageData.NITAP_HideHeadgear -and
             $null -ne $languageXml.LanguageData.NITAP_ShowHeadgear -and

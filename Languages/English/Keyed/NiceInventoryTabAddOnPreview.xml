@@ -11,4 +11,8 @@
     <NITAP_HeadgearLabel>Hat</NITAP_HeadgearLabel>
     <NITAP_HideHeadgear>Hide helmets and hats in the preview</NITAP_HideHeadgear>
     <NITAP_ShowHeadgear>Show helmets and hats in the preview</NITAP_ShowHeadgear>
+    <NITAP_ApparelLabel>Wear</NITAP_ApparelLabel>
+    <NITAP_HideApparel>Hide the entire outfit in the preview, including helmets and hats</NITAP_HideApparel>
+    <NITAP_ShowApparel>Show the outfit in the preview, restoring your helmets and hats preference</NITAP_ShowApparel>
+    <NITAP_ShowAllApparel>Show the entire outfit in the preview, including helmets and hats</NITAP_ShowAllApparel>
 </LanguageData>

@@ -11,4 +11,8 @@
     <NITAP_HeadgearLabel>Tête</NITAP_HeadgearLabel>
     <NITAP_HideHeadgear>Masquer les casques et chapeaux dans l’aperçu</NITAP_HideHeadgear>
     <NITAP_ShowHeadgear>Afficher les casques et chapeaux dans l’aperçu</NITAP_ShowHeadgear>
+    <NITAP_ApparelLabel>Tenue</NITAP_ApparelLabel>
+    <NITAP_HideApparel>Masquer toute la tenue dans l’aperçu, casques et chapeaux compris</NITAP_HideApparel>
+    <NITAP_ShowApparel>Réafficher la tenue dans l’aperçu en conservant votre choix pour les casques et chapeaux</NITAP_ShowApparel>
+    <NITAP_ShowAllApparel>Réafficher toute la tenue dans l’aperçu, casques et chapeaux compris</NITAP_ShowAllApparel>
 </LanguageData>

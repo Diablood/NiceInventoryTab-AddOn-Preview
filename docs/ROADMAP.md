@@ -67,14 +67,12 @@ Validated in game after local revision `r1`; closed for publication as `v1.2.0` 
 - Prefer a clear vanilla icon when available.
 - Do not alter the pawn's actual apparel or equipment state.
 
-## Planned milestones
-
 ### 1.3.0 - Add apparel preview toggle
 
-Start only after `1.2.0` is validated, published and tagged.
+Validated in game after local revision `r3`; closed for publication as `v1.3.0` from `feature/apparel-preview-toggle`.
 
 - Add a separate preview-only control for showing or hiding worn apparel.
-- Keep headgear control behavior independent.
+- Linked controls: hiding clothing hides everything; showing headgear restores everything; showing clothing restores the remembered headgear preference.
 - Do not alter the pawn's actual apparel or equipment state.
 
 ## Later evaluation
