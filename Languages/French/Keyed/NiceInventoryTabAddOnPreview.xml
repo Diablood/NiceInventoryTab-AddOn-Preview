@@ -8,4 +8,7 @@
     <NITAP_ZoomOut>Dézoomer</NITAP_ZoomOut>
     <NITAP_RotateCounterclockwise>Faire pivoter dans le sens inverse des aiguilles d’une montre</NITAP_RotateCounterclockwise>
     <NITAP_RotateClockwise>Faire pivoter dans le sens des aiguilles d’une montre</NITAP_RotateClockwise>
+    <NITAP_HeadgearLabel>Tête</NITAP_HeadgearLabel>
+    <NITAP_HideHeadgear>Masquer les casques et chapeaux dans l’aperçu</NITAP_HideHeadgear>
+    <NITAP_ShowHeadgear>Afficher les casques et chapeaux dans l’aperçu</NITAP_ShowHeadgear>
 </LanguageData>

@@ -69,6 +69,15 @@
 - Repeated rotation does not change the selected pawn's actual map rotation.
 - A portrait-rendering exception is logged once and does not break Nice Inventory Tab.
 
+## Headgear preview regression (1.2.0)
+
+- Headgear is visible by default; toggling hides/restores helmets and hats only in the preview.
+- Body apparel and actual pawn equipment/map rendering remain unchanged.
+- Enabled state is highlighted; French/English tooltips describe the next action.
+- Preference survives zoom, rotation, pawn/corpse selection, tab reopen and vanilla-view switching during the session.
+- Pawns without headgear and animals render safely.
+- Switching headgear visibility refreshes the portrait through separate cache parameters.
+
 ## UI regression
 
 - Existing Nice Inventory Tab buttons retain their behavior.

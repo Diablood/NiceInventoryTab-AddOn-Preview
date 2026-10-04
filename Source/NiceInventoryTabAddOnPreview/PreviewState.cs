@@ -10,10 +10,18 @@ namespace NiceInventoryTabAddOnPreview
         private const float CameraZoomStep = 0.1f;
 
         private static bool isVisible = true;
+        private static bool showHeadgear = true;
         private static Rot4 rotation = Rot4.South;
         private static float cameraZoom = 1f;
 
         internal static bool IsVisible => isVisible;
+
+        internal static bool ShowHeadgear => showHeadgear;
+
+        internal static void ToggleHeadgear()
+        {
+            showHeadgear = !showHeadgear;
+        }
 
         internal static Rot4 Rotation => rotation;
 

@@ -59,15 +59,15 @@ Validated in game after local revision `r1`; closed for publication as `v1.1.1` 
 - Preserve the player's preview visibility, rotation and zoom state while switching views.
 - Confirm repeated switching never accumulates width or affects Nice Inventory Tab's own toggle.
 
-## Planned milestones
-
 ### 1.2.0 - Add headgear preview toggle
 
-Start only after `1.1.1` is validated, published and tagged.
+Validated in game after local revision `r1`; closed for publication as `v1.2.0` from `feature/headgear-preview-toggle`.
 
 - Add a preview-only control for showing or hiding helmets and hats.
 - Prefer a clear vanilla icon when available.
 - Do not alter the pawn's actual apparel or equipment state.
+
+## Planned milestones
 
 ### 1.3.0 - Add apparel preview toggle
 

@@ -2,6 +2,27 @@
 
 ## Current milestone
 
+- Version: `1.2.0`
+- Name: Add headgear preview toggle
+- Branch: `feature/headgear-preview-toggle`
+- Base: `v1.1.1` (`476927f`), verified on remote `main` and `develop`.
+- Status: validated and closed
+- Validated local revision: `r1`
+- Tag: `v1.2.0`
+- Runtime metadata: `1.2.0` / `1.2.0.0`.
+
+### Implementation scope
+
+- Add one preview-only show/hide helmets and hats button, initially showing headgear.
+- Verified the installed RimWorld 1.6 PortraitsCache.Get signature and cache parameters: renderHeadgear is supported and included in portrait cache selection. The implementation passes ShowHeadgear directly to this call.
+- Keep state with the existing preview state and preserve it across rotation, zoom, pawn selection and temporary vanilla view switches for the current session.
+- Use the Core Apparel_SimpleHelmet uiIcon, highlight the enabled state and provide English/French action tooltips with a localized text fallback.
+- Never modify actual worn apparel, equipment, map rendering or Nice Inventory Tab itself.
+- Keep the clothing toggle entirely in milestone `1.3.0`.
+- Maintainer confirmed in-game tests OK on 2026-10-04 for local revision r1; automated release checks are recorded in TESTING_CURRENT.md.
+
+## Last closed milestone
+
 - Version: `1.1.1`
 - Name: Hide preview in vanilla inventory view
 - Branch: `fix/vanilla-view-preview-visibility`
@@ -42,9 +63,9 @@ In-game acceptance reported by the maintainer on 2026-10-04. Release build and c
 - Repeat the view switch several times and confirm no width accumulation or overlap occurs.
 - Confirm no new red error appears in `Player.log`.
 
-## Planned follow-up milestones
+## Milestone sequence
 
-After `1.1.1` is validated, published and tagged:
+Closed milestones:
 
 ```text
 1.2.0 - Add headgear preview toggle

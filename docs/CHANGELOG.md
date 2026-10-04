@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.0
+
+- Add a preview-only helmets/hats toggle beside the zoom controls, with a Core helmet icon and English/French action tooltips.
+- Show headgear by default and preserve the choice throughout the session, independently of visibility, zoom and rotation.
+- Use the portrait renderer's renderHeadgear parameter without changing worn items or the host mod.
+- Apparel visibility control remains reserved for 1.3.0.
+
 ## 1.1.1
 
 - Hide the integrated preview whenever Nice Inventory Tab switches to RimWorld's vanilla gear view.

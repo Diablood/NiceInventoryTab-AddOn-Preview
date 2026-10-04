@@ -1,4 +1,4 @@
-﻿[CmdletBinding()]
+[CmdletBinding()]
 param(
     [string]$RepositoryRoot,
     [string]$ExpectedVersion,
@@ -390,6 +390,9 @@ foreach ($forbiddenPresentationFragment in @(
 }
 
 $previewPanelText = Read-Text "Source/NiceInventoryTabAddOnPreview/PreviewPanelPatch.cs"
+foreach ($fragment in @('renderHeadgear: PreviewState.ShowHeadgear', 'PreviewState.ToggleHeadgear()', 'NITAP_HideHeadgear', 'NITAP_ShowHeadgear')) {
+    Assert-Contains -Text $previewPanelText -Fragment $fragment -Description "Headgear preview control"
+}
 
 if ($null -ne $previewPanelText -and
     $previewPanelText -match '(?s)DrawImageButton\(zoomOutButton,\s*TexButton\.Minus.*?PreviewState\.ZoomOut\(\)' -and
@@ -439,6 +442,9 @@ foreach ($languageFile in @(
     try {
         [xml]$languageXml = Get-Content -LiteralPath $languagePath -Raw -Encoding UTF8
         if ($null -ne $languageXml.LanguageData.NITAP_PreviewToggle -and
+            $null -ne $languageXml.LanguageData.NITAP_HeadgearLabel -and
+            $null -ne $languageXml.LanguageData.NITAP_HideHeadgear -and
+            $null -ne $languageXml.LanguageData.NITAP_ShowHeadgear -and
             $null -ne $languageXml.LanguageData.NITAP_ZoomIn -and
             $null -ne $languageXml.LanguageData.NITAP_ZoomOut -and
             $null -ne $languageXml.LanguageData.NITAP_RotateCounterclockwise -and

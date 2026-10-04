@@ -1,5 +1,32 @@
 # Current testing
 
+## 1.2.0
+
+Status: validated locally after `r1`; milestone closed for publication.
+
+### Automated evidence (2026-10-04)
+
+- Verified the installed RimWorld 1.6 PortraitsCache.Get renderHeadgear argument and its participation in portrait cache equality.
+- Project consistency and publication-ready checks passed for 1.2.0; final Release rebuild and package build passed with zero warnings and zero errors. Final archive: dist/NiceInventoryTab-AddOn-Preview-1.2.0.zip (930400 bytes, eight runtime files, Workshop ID verified).
+- Clean archive: dist/NiceInventoryTab-AddOn-Preview-1.2.0-r1.zip (930400 bytes, eight runtime files).
+- Staged into D:\SteamLibrary\steamapps\common\RimWorld\Mods\NiceInventoryTab-AddOn-Preview; all eight files match the archive by SHA-256.
+- Previous local copy backed up in dist/local-backup-1.1.1-20261004-225930.zip.
+- Workshop ID 3777164660 is preserved in the repository, package and installed copy.
+- Maintainer confirmed the in-game tests OK on 2026-10-04. Acceptance is user-reported; the agent did not independently run the game or inspect Player.log. No Steam upload is claimed.
+
+### In-game acceptance coverage
+
+The icon is highlighted when headgear is visible. The preference lasts for the current session and defaults to visible after restart.
+
+- Test a pawn with a helmet, a pawn with a hat and a pawn without headgear.
+- Toggle headgear off/on: only the preview changes; worn items and map appearance stay unchanged.
+- Check all four rotations, zoom limits and selection of another pawn or corpse.
+- Check a non-human pawn and confirm safe behavior when headgear is inapplicable.
+- Switch to vanilla view and back, close/reopen the inventory and hide/show the preview; headgear preference should survive within the session.
+- Check immediate portrait refresh, English/French tooltips and control spacing.
+- Recheck the 1.1.1 vanilla-view width regression and absence of new rendering/Harmony errors.
+- Run consistency, Release build and clean-package validation after the candidate is implemented; preserve Workshop ID 3777164660.
+
 ## 1.1.1
 
 Status: validated locally after `r1`; milestone closed for publication.
@@ -48,8 +75,8 @@ Status: validated locally after `r1`; milestone closed for publication.
 - Preview visibility, orientation and zoom are not persisted beyond the current session.
 - Alternative portrait renderers have not received dedicated compatibility adaptations.
 
-## Next milestone after validation
+## Next milestone
 
 ```text
-1.2.0 - Add headgear preview toggle
+1.3.0 - Add apparel preview toggle
 ```

@@ -8,4 +8,7 @@
     <NITAP_ZoomOut>Zoom out</NITAP_ZoomOut>
     <NITAP_RotateCounterclockwise>Rotate counterclockwise</NITAP_RotateCounterclockwise>
     <NITAP_RotateClockwise>Rotate clockwise</NITAP_RotateClockwise>
+    <NITAP_HeadgearLabel>Hat</NITAP_HeadgearLabel>
+    <NITAP_HideHeadgear>Hide helmets and hats in the preview</NITAP_HideHeadgear>
+    <NITAP_ShowHeadgear>Show helmets and hats in the preview</NITAP_ShowHeadgear>
 </LanguageData>
